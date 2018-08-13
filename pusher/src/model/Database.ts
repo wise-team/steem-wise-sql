@@ -1,6 +1,7 @@
 
 import * as Sequelize from "sequelize";
 import { WiseOperation } from "./WiseOperationModel";
+import { Log } from "../log"; const log = Log.getLogger();
 
 export class Database {
     private sequelize: Sequelize.Sequelize;
@@ -21,11 +22,8 @@ export class Database {
         return this.wiseOperationsModel.max("block_num");
     }
 
-    public async pushWiseOperations(operations: WiseOperation.Instance []) {
+    public async pushWiseOperations(operations: WiseOperation.Attributes []) {
+        Log.cheapDebug(() => "Pushing " + JSON.stringify(operations, undefined, 2));
         return this.wiseOperationsModel.bulkCreate(operations);
-    }
-
-    public instantiateWiseOperation(attributes: WiseOperation.Attributes): WiseOperation.Instance {
-        return this.wiseOperationsModel.build(attributes);
     }
 }

@@ -3,12 +3,11 @@ import { Wise, DirectBlockchainApi, Api, EffectuatedSmartvotesOperation } from "
 import { Block, Transaction, Operation, CustomJsonOperation, VoteOperation } from "./blockchain-operations-types";
 import { Database } from "./model/Database";
 import { StaticConfig } from "./StaticConfig";
-import { Log } from "./log";
+import { Log } from "./log"; const log = Log.getLogger();
 import { WiseOperation } from "./model/WiseOperationModel";
 import { isSetRules } from "../node_modules/steem-wise-core/dist/protocol/SetRules";
 import { isSendVoteorder } from "../node_modules/steem-wise-core/dist/protocol/SendVoteorder";
 import { isConfirmVote } from "../node_modules/steem-wise-core/dist/protocol/ConfirmVote";
- const log = Log.getLogger();
 
 export class Pusher {
     private timeoutMs: number = StaticConfig.TIMEOUT_MS;
@@ -24,7 +23,7 @@ export class Pusher {
 
     public async startLoop(): Promise<void> {
         let nextBlock = await this.database.getLastBlockNum() + 1;
-        if (!nextBlock) nextBlock = StaticConfig.INTRODUCTION_OF_SMARTVOTES_MOMENT.blockNum;
+        if (!nextBlock) nextBlock = StaticConfig.START_BLOCK_NUM;
 
         log.info("Streaming packages from STEEM blockchain, starting at block " + nextBlock);
         await this.loadBlockLoop(nextBlock);
@@ -49,7 +48,7 @@ export class Pusher {
     }
 
     private async pushOperations(ops: EffectuatedSmartvotesOperation []) {
-        const opsToPush: WiseOperation.Instance [] = [];
+        const opsToPush: WiseOperation.Attributes [] = [];
         ops.forEach(op => {
             const opType = isSetRules(op.command) ? "set_rules" :
                            isSendVoteorder(op.command) ? "send_voteorder" :
@@ -63,16 +62,16 @@ export class Pusher {
                 block_num: op.moment.blockNum,
                 transaction_num: op.moment.transactionNum,
                 transaction_id: op.transaction_id,
-                timestamp: op.timestamp.getTime(),
+                timestamp: op.timestamp,
 
                 voter: op.voter,
                 delegator: op.delegator,
                 operation_type: opType,
                 json_str: JSON.stringify(op.command),
             };
-            opsToPush.push(this.database.instantiateWiseOperation(opToPush));
+            opsToPush.push(opToPush);
         });
 
-        return this.database.pushWiseOperations(opsToPush);
+        if (opsToPush.length > 0) return this.database.pushWiseOperations(opsToPush);
     }
 }
