@@ -18,14 +18,16 @@
     "bluebird": "^3.5.1",
     "pg": "^7.4.3",
     "pg-hstore": "^2.3.2",
+    "sequelize": "^4.38.0",
     "steem": "^0.7.1",
-    "steem-wise-core": "^0.19.5",
+    "steem-wise-core": "^0.19.6",
     "winston": "^3.0.0"
   },
   "devDependencies": {
-    "@types/node": "^10.1.2",
     "@types/bluebird": "^3.5.20",
+    "@types/node": "^10.1.2",
     "@types/pg": "^7.4.9",
+    "@types/sequelize": "^4.27.24",
     "ts-node": "^6.0.3",
     "tslint": "^5.10.0",
     "typescript": "^2.8.3"
