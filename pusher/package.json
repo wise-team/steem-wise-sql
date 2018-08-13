@@ -1,6 +1,6 @@
 {
   "name": "steem-wise-sql-pusher",
-  "version": "1.0.0",
+  "version": "0.19.5",
   "description": "Steem WISE sql pusher",
   "main": "dist/index.js",
   "engines": {
@@ -15,14 +15,17 @@
   "author": "Jędrzej lewandowski <jedrzejblew@gmail.com> (https://jedrzej.lewandowski.doctor)",
   "license": "MIT",
   "dependencies": {
-    "@types/pg": "^7.4.9",
+    "bluebird": "^3.5.1",
     "pg": "^7.4.3",
     "pg-hstore": "^2.3.2",
     "steem": "^0.7.1",
-    "steem-wise-core": "^0.19.5"
+    "steem-wise-core": "^0.19.5",
+    "winston": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^10.1.2",
+    "@types/bluebird": "^3.5.20",
+    "@types/pg": "^7.4.9",
     "ts-node": "^6.0.3",
     "tslint": "^5.10.0",
     "typescript": "^2.8.3"
