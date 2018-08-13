@@ -8,29 +8,6 @@ CREATE DATABASE app_db;
 CREATE SCHEMA api;
 
 
-
----------------------
--- TABLES & SCHEMA --
----------------------
-
-CREATE TYPE operation_type AS ENUM ('set_rules', 'send_voteorder', 'confirm_vote');
-
-CREATE TABLE api.operations (
-    id serial,
-    block_num bigint NOT NULL,
-    trx_num smallint NOT NULL,
-    trx_id character(40) NOT NULL,
-    timestamp timestamp NOT NULL,
-
-    voter character(16),
-    delegator character (16),
-    operation_type operation_type NOT NULL,
-    json_str text NOT NULL,
-    PRIMARY KEY ( id )
-);
-
-
-
 --------------------
 --  --- VIEWS --- --
 --------------------
@@ -72,8 +49,4 @@ GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA api TO postgrest_anon;
 GRANT SELECT ON ALL TABLES IN SCHEMA api TO postgrest_anon;
 
 \c app_db pusher
-INSERT INTO api.users (name) VALUES ('noisy') ON CONFLICT(name) DO UPDATE SET name=EXCLUDED.name  RETURNING id;
-INSERT INTO api.users (name) VALUES ('noisy') ON CONFLICT(name) DO UPDATE SET name=EXCLUDED.name  RETURNING id;
-INSERT INTO api.users (name) VALUES ('perduta') ON CONFLICT(name) DO UPDATE SET name=EXCLUDED.name RETURNING id;
-INSERT INTO api.users (name) VALUES ('jblew') ON CONFLICT(name) DO UPDATE SET name=EXCLUDED.name RETURNING id;
-INSERT INTO api.users (name) VALUES ('noisy') ON CONFLICT(name) DO UPDATE SET name=EXCLUDED.name RETURNING id;
+-- example operations as pusher
