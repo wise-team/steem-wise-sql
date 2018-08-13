@@ -2,9 +2,15 @@ import * as winston from "winston";
 
 export class Log {
     public static configureLoggers() {
-        Log.getLogger().add(new winston.transports.Console({
-            format: winston.format.simple(),
-            timestamp: true
+        Log.getLogger().add(
+            new winston.transports.Console({
+            format: winston.format.combine(
+                winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+                winston.format.printf(info => {
+                    return `${info.timestamp} [${info.level}]: ${info.message}`;
+                })
+            ),
+            timestamp: true,
         } as object));
         Log.getLogger().level = "warn";
     }
