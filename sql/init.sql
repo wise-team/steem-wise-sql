@@ -13,24 +13,19 @@ CREATE SCHEMA api;
 -- TABLES & SCHEMA --
 ---------------------
 
-CREATE TYPE operation_type AS ENUM ('vote', 'set_rules', 'send_voteorder', 'confirm_votes');
-
-CREATE TABLE api.users (
-    id serial,
-    name character(16) UNIQUE NOT NULL
-);
+CREATE TYPE operation_type AS ENUM ('set_rules', 'send_voteorder', 'confirm_vote');
 
 CREATE TABLE api.operations (
     id serial,
     block_num bigint NOT NULL,
     trx_num smallint NOT NULL,
-    op_in_trx smallint NOT NULL,
     trx_id character(40) NOT NULL,
     timestamp timestamp NOT NULL,
-    op_sender_id integer,
-    op_recipient_id integer,
+
+    voter character(16),
+    delegator character (16),
     operation_type operation_type NOT NULL,
-    op_data text NOT NULL,
+    json_str text NOT NULL,
     PRIMARY KEY ( id )
 );
 
@@ -40,19 +35,19 @@ CREATE TABLE api.operations (
 --  --- VIEWS --- --
 --------------------
 
-CREATE FUNCTION api.user_operations (username character(16)) RETURNS TABLE (
+/*CREATE FUNCTION api.user_operations (username character(16)) RETURNS TABLE (
     block_num bigint,
     trx_num smallint,
-    op_in_trx smallint,
     trx_id character(40),
     operation_type operation_type,
-    op_data text 
+    delegator
+    json_str text 
 ) 
 AS $$
     SELECT block_num, trx_num, op_in_trx, trx_id, operation_type, op_data FROM api.operations WHERE 
         op_sender_id = (SELECT id FROM api.users WHERE name = username)
         OR op_recipient_id = (SELECT id FROM api.users WHERE name = username);
-$$ LANGUAGE SQL IMMUTABLE STRICT;
+$$ LANGUAGE SQL IMMUTABLE STRICT;*/
 
 
 
