@@ -1,5 +1,6 @@
 import { Client } from "pg";
 import { Block, Transaction, Operation, CustomJsonOperation, VoteOperation } from "./blockchain-operations-types";
+import { Log } from "./log"; const log = Log.getLogger();
 
 export class Pusher {
     private connectionUrl: string;
@@ -22,8 +23,7 @@ export class Pusher {
     }
 
     public async startLoop(): Promise<void> {
-        console.log("Streaming packages from STEEM blockchain:");
-        console.log("");
+        log.info("Streaming packages from STEEM blockchain:");
         this.steem.api.streamBlock((error: Error| undefined, block_: object) => {
             if (error) console.error(error);
             else {
@@ -67,7 +67,7 @@ export class Pusher {
         if (operation.op[0] === "vote") {
             await this.pushVote(operation, operation.op[1] as VoteOperation);
         }
-        else if (operation.op[0] === "custom_json" && (operation.op[1] as CustomJsonOperation).id === "smartvote") {
+        else if (operation.op[0] === "custom_json" && (operation.op[1] as CustomJsonOperation).id === "wise") {
             await this.pushSmartvote(operation, operation.op[1] as CustomJsonOperation);
         }
     }
