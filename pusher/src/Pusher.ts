@@ -22,8 +22,9 @@ export class Pusher {
     }
 
     public async startLoop(): Promise<void> {
-        let nextBlock = await this.database.getLastBlockNum() + 1;
-        if (!nextBlock) nextBlock = StaticConfig.START_BLOCK_NUM;
+        let nextBlock = await this.database.getPropertyAsNumber("last_processed_block");
+        if (nextBlock) nextBlock++;
+        else nextBlock = StaticConfig.START_BLOCK_NUM;
 
         log.info("Streaming packages from STEEM blockchain, starting at block " + nextBlock);
         await this.loadBlockLoop(nextBlock);
@@ -38,6 +39,7 @@ export class Pusher {
         .timeout(this.timeoutMs, new Error("Timeout (> " + this.timeoutMs + "ms while processing operations)"))
         // when timeout occurs an error is thrown. It is then catched few lines below
         // (already processed operations will not be processed second time, as is described below).
+        .then(() => this.database.setProperty("last_processed_block", blockNum + ""))
         .then(() => {
             log.info("Finished processing block " + blockNum);
             return this.loadBlockLoop(blockNum + 1);
