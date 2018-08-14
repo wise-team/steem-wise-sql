@@ -20,7 +20,7 @@ export class Database {
         this.propertiesModel = Properties.modelFactory(this.sequelize);
     }
 
-    public async connect() {
+    public async connectAndInit() {
         return this.sequelize.authenticate()
         .then(() => this.wiseOperationsModel.sync())
         .then(() => this.sequelize.query("GRANT SELECT ON api.operations TO postgrest_anon;"))

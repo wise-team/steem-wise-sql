@@ -32,7 +32,9 @@ export class Pusher {
     }
 
     private async loadBlockLoop(blockNum: number): Promise<void> {
-        log.info("Begin processing block " + blockNum);
+        if (blockNum % 10 == 0) log.info("Begin processing block " + blockNum);
+        else log.debug("Begin processing block " + blockNum);
+
         return Bluebird.resolve()
         .then(() => this.api.getAllWiseOperationsInBlock(blockNum, this.wise.getProtocol()))
         .then((ops: EffectuatedSmartvotesOperation []) => this.pushOperations(ops))
@@ -41,7 +43,7 @@ export class Pusher {
         // (already processed operations will not be processed second time, as is described below).
         .then(() => this.database.setProperty("last_processed_block", blockNum + ""))
         .then(() => {
-            log.info("Finished processing block " + blockNum);
+            log.debug("Finished processing block " + blockNum);
             return this.loadBlockLoop(blockNum + 1);
         }, (error: Error) => {
             log.error(" Reversible error: " + error.message + ". Retrying in 3 seconds...");
