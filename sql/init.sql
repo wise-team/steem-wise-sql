@@ -34,7 +34,7 @@ $$ LANGUAGE SQL IMMUTABLE STRICT;*/
 
 CREATE USER pusher WITH PASSWORD 'pusher';
 GRANT CONNECT ON DATABASE app_db TO pusher;
-GRANT usage ON SCHEMA api TO pusher;
+GRANT all ON SCHEMA api TO pusher;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA api TO pusher;
 GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA api TO pusher;
 
@@ -48,5 +48,5 @@ GRANT usage ON SCHEMA api TO postgrest_anon;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA api TO postgrest_anon;
 GRANT SELECT ON ALL TABLES IN SCHEMA api TO postgrest_anon;
 
+
 \c app_db pusher
--- example operations as pusher

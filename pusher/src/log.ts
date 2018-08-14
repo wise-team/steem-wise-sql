@@ -7,7 +7,8 @@ export class Log {
             format: winston.format.combine(
                 winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
                 winston.format.printf(info => {
-                    return `${info.timestamp} [${info.level}]: ${info.message}`;
+                    if (info.error) return `${info.timestamp} [${info.level}]: ` + JSON.stringify(info) + `(message=${info.message})`;
+                    else return `${info.timestamp} [${info.level}]: ${info.message}`;
                 })
             ),
             timestamp: true,

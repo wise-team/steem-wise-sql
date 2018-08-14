@@ -23,11 +23,15 @@ export class Database {
     public async connect() {
         return this.sequelize.authenticate()
         .then(() => this.wiseOperationsModel.sync())
-        .then(() => this.propertiesModel.sync());
+        .then(() => this.propertiesModel.sync())
+        .then(async () => {
+            await this.sequelize.query("GRANT SELECT ON api.operations TO postgrest_anon;");
+            await this.sequelize.query("GRANT SELECT ON api.properties TO postgrest_anon;");
+        });
     }
 
     public async pushWiseOperations(operations: WiseOperation.Attributes []) {
-        Log.cheapDebug(() => "Pushing " + JSON.stringify(operations, undefined, 2));
+        log.info("Pushing " + JSON.stringify(operations, undefined, 2));
         return this.wiseOperationsModel.bulkCreate(operations);
     }
 

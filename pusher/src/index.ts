@@ -9,6 +9,10 @@ const log = Log.getLogger();
  ******************/
 Log.configureLoggers();
 Log.setLevel("info");
+if (process.env.LOG_LEVEL) {
+    Log.setLevel(process.env.LOG_LEVEL);
+    console.log("Log level set to \"" + process.env.LOG_LEVEL + "\"");
+}
 process.on("unhandledRejection", (err) => {
     log.crit(err);
     console.error(err);
@@ -39,5 +43,5 @@ async function startApp() {
 
 startApp()
 .catch((error: Error) => {
-    log.crit(error);
+    log.error(error);
 });

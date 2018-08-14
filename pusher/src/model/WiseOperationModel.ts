@@ -37,7 +37,8 @@ export namespace WiseOperation {
             timestamps: false,
             underscored: true,
             freezeTableName: true,
-            tableName: "api.operations",
+            schema: "api",
+            tableName: "operations",
         });
     }
 }

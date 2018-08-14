@@ -21,7 +21,8 @@ export namespace Properties {
             timestamps: false,
             underscored: true,
             freezeTableName: true,
-            tableName: "api.properties",
+            schema: "api",
+            tableName: "properties",
         });
     }
 }

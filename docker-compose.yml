@@ -2,7 +2,7 @@ version: "3"
 services:
   db:
     image: postgres:10-alpine
-    container_name: steem-wise-sql_db
+    container_name: steem-wise-sql_db_1
     expose: # expose exposes ports only inside this stack and do not publish them to host machine.
       - "5432"
     environment:
@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - "./sql:/docker-entrypoint-initdb.d:ro"
-      - "steem_wise_sql_pgdata:/var/lib/postgresql/data"
+      - "pgdata:/var/lib/postgresql/data"
   
   api:
     image: postgrest/postgrest
@@ -38,6 +38,7 @@ services:
       DATABASE_URL: postgres://pusher:pusher@db:5432/app_db
       STEEM_API_URL: https://api.steemit.com/
       # START_BLOCK_NUM: 25021220 # interesting moment for testing
+      LOG_LEVEL: debug
 
 volumes:
-  steem_wise_sql_pgdata:
+  pgdata: # steem-wise-sql_pgdata
