@@ -12,7 +12,9 @@ export class Database {
     private propertiesModel: Properties.Model;
 
     public constructor(connectionUrl: string) {
-        this.sequelize = new Sequelize(connectionUrl);
+        this.sequelize = new Sequelize(connectionUrl, {
+            logging: log.debug
+        });
 
         this.wiseOperationsModel = WiseOperation.modelFactory(this.sequelize);
         this.propertiesModel = Properties.modelFactory(this.sequelize);
