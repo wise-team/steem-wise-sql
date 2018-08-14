@@ -29,9 +29,7 @@ services:
     volumes:
       - ./api_specification:/usr/share/nginx/html:ro
     ports:
-      - "3001:3001"
-    environment:
-      - NGINX_PORT=3001
+      - "3001:80"
 
 #  adminer: # for debugging
 #    image: adminer
