@@ -12,8 +12,6 @@
     "start": "node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Jędrzej lewandowski <jedrzejblew@gmail.com> (https://jedrzej.lewandowski.doctor)",
-  "license": "MIT",
   "dependencies": {
     "bluebird": "^3.5.1",
     "pg": "^7.4.3",
@@ -31,5 +29,11 @@
     "ts-node": "^6.0.3",
     "tslint": "^5.10.0",
     "typescript": "^2.8.3"
+  },
+  "author": "Jędrzej lewandowski <jedrzejblew@gmail.com> (https://jedrzej.lewandowski.doctor)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/noisy-witness/steem-wise-sql.git"
   }
 }
