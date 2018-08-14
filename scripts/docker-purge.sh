@@ -7,3 +7,5 @@ set -e
 
 docker-compose down
 docker volume rm steem-wise-sql_pgdata
+docker volume rm steemwisesql_pgdata # these names may vary in different docker versions
+

@@ -7,6 +7,14 @@ CREATE DATABASE app_db;
 
 CREATE SCHEMA api;
 
+COMMENT ON SCHEMA api IS $$
+<h1 style="background: #6b11ff; color: white; padding: 0.5em;">Steem WISE SQL api</h1>
+
+Steem WISE SQL is a database with all WISE operations, synced with blockchain.
+
+More info & source: [https://github.com/noisy-witness/steem-wise-sql](https://github.com/noisy-witness/steem-wise-sql)
+$$;
+
 
 --------------------
 --  --- VIEWS --- --
