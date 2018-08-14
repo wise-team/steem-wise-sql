@@ -2,6 +2,7 @@ version: "3"
 services:
   db:
     image: postgres:10-alpine
+    container_name: steem-wise-sql_db
     expose: # expose exposes ports only inside this stack and do not publish them to host machine.
       - "5432"
     environment:
