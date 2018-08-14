@@ -12,25 +12,6 @@ services:
       - "./sql:/docker-entrypoint-initdb.d:ro"
       - "pgdata:/var/lib/postgresql/data"
   
-  api:
-    image: postgrest/postgrest
-    ports:
-      - "3000:3000"
-    depends_on:
-      - "db"
-    environment:
-      PGRST_DB_URI: postgres://postgrest:postgrest@db:5432/app_db
-      PGRST_DB_SCHEMA: api
-      PGRST_DB_ANON_ROLE: postgrest_anon
-      PGRST_MAX_ROWS: 1000
-
-  api_specification:
-    image: nginx
-    volumes:
-      - ./api_specification:/usr/share/nginx/html:ro
-    ports:
-      - "3001:80"
-
 #  adminer: # for debugging
 #    image: adminer
 #    restart: always
@@ -45,7 +26,30 @@ services:
       DATABASE_URL: postgres://pusher:pusher@db:5432/app_db
       STEEM_API_URL: https://api.steemit.com/
       # START_BLOCK_NUM: 25021220 # interesting moment for testing
-      LOG_LEVEL: debug
+      LOG_LEVEL: info
+
+  postgrest:
+    image: postgrest/postgrest
+    command: bash -c "echo \"Waiting 12s...\" && sleep 12 && echo \"Starting postgrest\" && exec postgrest /etc/postgrest.conf"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - "db"
+      - "pusher"
+    environment:
+      PGRST_DB_URI: postgres://postgrest:postgrest@db:5432/app_db
+      PGRST_DB_SCHEMA: api
+      PGRST_DB_ANON_ROLE: postgrest_anon
+      PGRST_MAX_ROWS: 1000
+    volumes:
+      - "./postgrest:/postgrest_service:ro"
+
+  api_specification:
+    image: nginx
+    volumes:
+      - ./api_specification:/usr/share/nginx/html:ro
+    ports:
+      - "3001:80"
 
 volumes:
   pgdata: # steem-wise-sql_pgdata
