@@ -8,7 +8,7 @@ It consists of four services:
 - **api_specification**: hosts swagger specification
 
 ## Try and use our API online
-I have launched a temporary version of steem-wise-sql at [http://muon.jblew.pl:3000/(http://muon.jblew.pl:3000/). You can see the swagger specification here: **[http://muon.jblew.pl:3001/](http://muon.jblew.pl:3001/)**. Feel free to use and try it, but beware that it was just launched and the synchronization may not have been finished yet.
+I have launched a temporary version of steem-wise-sql at [http://muon.jblew.pl:3000/](http://muon.jblew.pl:3000/). You can see the swagger specification here: **[http://muon.jblew.pl:3001/](http://muon.jblew.pl:3001/)**. Feel free to use and try it, but beware that it was just launched and the synchronization may not have been finished yet.
 
 ## How to run
 
