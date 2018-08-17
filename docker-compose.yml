@@ -24,9 +24,9 @@ services:
       - "db"
     environment:
       DATABASE_URL: postgres://pusher:pusher@db:5432/app_db
-      STEEM_API_URL: https://api.steemit.com/
+      STEEM_API_URL: https://api.steemit.com/,https://gtg.steem.house:8090,https://steemd.minnowsupportproject.org/
       # START_BLOCK_NUM: 25021220 # interesting moment for testing
-      LOG_LEVEL: info
+      LOG_LEVEL: debug
 
   postgrest:
     image: postgrest/postgrest
@@ -36,7 +36,8 @@ services:
     depends_on:
       - "db"
       - "pusher"
-    environment:
+    environment: # https://github.com/PostgREST/postgrest/blob/f6c1ff810e92321f2cd522058d5c6fd74cb64226/docker/postgrest.conf
+      # PGRST_SERVER_PROXY_URI: muon.jblew.pl
       PGRST_DB_URI: postgres://postgrest:postgrest@db:5432/app_db
       PGRST_DB_SCHEMA: api
       PGRST_DB_ANON_ROLE: postgrest_anon

@@ -3,6 +3,8 @@ import * as http from "http";
 import { Pusher } from "./Pusher";
 import { Database } from "./model/Database";
 import { Log } from "./log";
+import { DirectBlockchainApi } from "steem-wise-core";
+import { BufferedBlockLoader } from "./BufferedBlockLoader";
 const log = Log.getLogger();
 
 /******************
@@ -15,7 +17,7 @@ if (process.env.LOG_LEVEL) {
     console.log("Log level set to \"" + process.env.LOG_LEVEL + "\"");
 }
 process.on("unhandledRejection", (err) => {
-    log.crit(err);
+    log.error(err);
     console.error(err);
     process.exit(1);
 });
@@ -25,11 +27,16 @@ process.on("unhandledRejection", (err) => {
  ** CONFIG **
  ************/
 const dbUrl = process.env.DATABASE_URL || "postgres://localhost:5432/db";
-const steemApiUrl = process.env.STEEM_API_URL || "https://api.steemit.com/";
-const steemOptions: object = { url: steemApiUrl, uri: steemApiUrl };
+const steemApiUrls = (process.env.STEEM_API_URL || "https://api.steemit.com/").split(",");
+
+const apis: DirectBlockchainApi [] = steemApiUrls.map(url => {
+    const steemOptions: object = { url: url, uri: url };
+    return new DirectBlockchainApi("-no-user-", "-no-postingwif-", steemOptions);
+});
+
 
 log.info("Using db url: " + dbUrl);
-log.info("Using steem api url: " + steemApiUrl);
+log.info("Using steem api urls: " + steemApiUrls);
 
 /***************
  ** START APP **
@@ -40,7 +47,7 @@ async function startApp() {
 
     if (process.env.HEALTHCHECK_LISTEN_PORT) await healthcheckListen(parseInt(process.env.HEALTHCHECK_LISTEN_PORT));
 
-    const pusher = new Pusher(database, steemOptions);
+    const pusher = new Pusher(database, new BufferedBlockLoader(apis));
     return pusher.startLoop();
 }
 

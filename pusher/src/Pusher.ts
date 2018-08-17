@@ -8,17 +8,16 @@ import { WiseOperation } from "./model/WiseOperationModel";
 import { isSetRules } from "../node_modules/steem-wise-core/dist/protocol/SetRules";
 import { isSendVoteorder } from "../node_modules/steem-wise-core/dist/protocol/SendVoteorder";
 import { isConfirmVote } from "../node_modules/steem-wise-core/dist/protocol/ConfirmVote";
+import { BufferedBlockLoader } from "./BufferedBlockLoader";
 
 export class Pusher {
     private timeoutMs: number = StaticConfig.TIMEOUT_MS;
     private database: Database;
-    private wise: Wise;
-    private api: DirectBlockchainApi;
+    private blockLoader: BufferedBlockLoader;
 
-    public constructor(database: Database, steemOptions: object) {
+    public constructor(database: Database, blockLoader: BufferedBlockLoader) {
         this.database = database;
-        this.api = new DirectBlockchainApi("-no-username-", "-no-posting-wif-", steemOptions);
-        this.wise = new Wise("-no-username-", this.api);
+        this.blockLoader = blockLoader;
     }
 
     public async startLoop(): Promise<void> {
@@ -36,7 +35,7 @@ export class Pusher {
         else log.debug("Begin processing block " + blockNum);
 
         return Bluebird.resolve()
-        .then(() => this.api.getAllWiseOperationsInBlock(blockNum, this.wise.getProtocol()))
+        .then(() => this.blockLoader.loadBlock(blockNum))
         .then((ops: EffectuatedSmartvotesOperation []) => this.pushOperations(ops))
         .timeout(this.timeoutMs, new Error("Timeout (> " + this.timeoutMs + "ms while processing operations)"))
         // when timeout occurs an error is thrown. It is then catched few lines below

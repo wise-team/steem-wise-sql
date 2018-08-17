@@ -25,7 +25,7 @@ export namespace WiseOperation {
             id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
             block_num: { type: Sequelize.INTEGER, allowNull: false },
             transaction_num: { type: Sequelize.SMALLINT, allowNull: false },
-            transaction_id: { type: Sequelize.STRING, allowNull: false },
+            transaction_id: { type: Sequelize.STRING(40), allowNull: false },
             timestamp: { type: Sequelize.DATE, allowNull: false },
 
             voter: { type: Sequelize.STRING(16), allowNull: false },
