@@ -6,7 +6,7 @@ export class Views {
         `DROP VIEW IF EXISTS api.rulesets;`,
         `DROP VIEW IF EXISTS api.last_confirmation;`,
         `CREATE VIEW api.rulesets AS
-            SELECT * FROM api.operations WHERE operation_type='set_rules'
+            SELECT * FROM api.operations WHERE operation_type='set_rules' ORDER BY moment DESC
         ;`,
         `CREATE VIEW api.last_confirmation AS
             SELECT * FROM (
