@@ -4,6 +4,7 @@ const log = Log.getLogger();
 import * as Sequelize from "sequelize";
 import { WiseOperation } from "./WiseOperationModel";
 import { Properties } from "./PropertiesModel";
+import { Views } from "./Views";
 
 
 export class Database {
@@ -13,7 +14,10 @@ export class Database {
 
     public constructor(connectionUrl: string) {
         this.sequelize = new Sequelize(connectionUrl, {
-            logging: log.debug
+            logging: log.debug,
+            dialectOptions: {
+                multipleStatements: true
+            }
         });
 
         this.wiseOperationsModel = WiseOperation.modelFactory(this.sequelize);
@@ -23,12 +27,13 @@ export class Database {
     public async connectAndInit() {
         return this.sequelize.authenticate()
         .then(() => this.wiseOperationsModel.sync())
-        .then(() => this.sequelize.query("GRANT SELECT ON api.operations TO postgrest_anon;"))
-
         .then(() => this.propertiesModel.sync())
-        .then(() => this.sequelize.query("GRANT SELECT ON api.properties TO postgrest_anon;"))
 
-        .then(() => this.sequelize.query("GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA api TO postgrest_anon;"));
+        .then(() => this.sequelize.query("GRANT SELECT ON api.operations TO postgrest_anon;"))
+        .then(() => this.sequelize.query("GRANT SELECT ON api.properties TO postgrest_anon;"))
+        .then(() => this.sequelize.query("GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA api TO postgrest_anon;"))
+
+        .then(() => Views.setupViews(this.sequelize));
     }
 
     public async pushWiseOperations(operations: WiseOperation.Attributes []) {
