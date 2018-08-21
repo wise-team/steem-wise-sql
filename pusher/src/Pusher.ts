@@ -9,6 +9,7 @@ import { isSetRules } from "../node_modules/steem-wise-core/dist/protocol/SetRul
 import { isSendVoteorder } from "../node_modules/steem-wise-core/dist/protocol/SendVoteorder";
 import { isConfirmVote } from "../node_modules/steem-wise-core/dist/protocol/ConfirmVote";
 import { BufferedBlockLoader } from "./BufferedBlockLoader";
+import { Util } from "./util/util";
 
 export class Pusher {
     private timeoutMs: number = StaticConfig.TIMEOUT_MS;
@@ -66,6 +67,7 @@ export class Pusher {
                 transaction_num: op.moment.transactionNum,
                 transaction_id: op.transaction_id,
                 timestamp: op.timestamp,
+                moment: op.moment.blockNum + "." + Util.padStart((op.moment.transactionNum + ""), 4, "0"),
 
                 voter: op.voter,
                 delegator: op.delegator,

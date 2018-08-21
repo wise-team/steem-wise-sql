@@ -9,6 +9,7 @@ export namespace WiseOperation {
         transaction_num: number;
         transaction_id: string;
         timestamp: Date;
+        moment: string;
 
         voter: string;
         delegator: string;
@@ -27,6 +28,7 @@ export namespace WiseOperation {
             transaction_num: { type: Sequelize.SMALLINT, allowNull: false },
             transaction_id: { type: Sequelize.STRING(40), allowNull: false },
             timestamp: { type: Sequelize.DATE, allowNull: false },
+            moment: { type: Sequelize.NUMERIC(14, 4), allowNull: false },
 
             voter: { type: Sequelize.STRING(16), allowNull: false },
             delegator: { type: Sequelize.STRING(16), allowNull: false },
