@@ -8,7 +8,7 @@ CREATE VIEW api.operations_view AS
     SELECT *, CAST(block_num::text||'.'||LPAD(transaction_num::text, 4, '0') AS numeric(14,4)) as moment FROM api.operations ORDER BY moment DESC
 ;
 CREATE VIEW api.rulesets AS
-    SELECT * FROM api.operations_view WHERE operation_type='set_rules'
+    SELECT * FROM api.operations_view WHERE operation_type='set_rules' ORDER BY moment DESC
 ;
 CREATE VIEW api.last_confirmation AS
     SELECT * FROM (
