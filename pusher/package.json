@@ -1,6 +1,6 @@
 {
   "name": "steem-wise-sql-pusher",
-  "version": "0.20.0",
+  "version": "0.20.1",
   "description": "Steem WISE sql pusher",
   "main": "dist/index.js",
   "engines": {
@@ -18,7 +18,7 @@
     "pg-hstore": "^2.3.2",
     "sequelize": "^4.38.0",
     "steem": "^0.7.1",
-    "steem-wise-core": "^0.20.0",
+    "steem-wise-core": "^0.20.1",
     "winston": "^3.0.0"
   },
   "devDependencies": {
