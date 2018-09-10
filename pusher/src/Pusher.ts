@@ -1,6 +1,7 @@
 import * as Bluebird  from "bluebird";
+import * as steem from "steem";
 import { Wise, DirectBlockchainApi, Api, EffectuatedSmartvotesOperation } from "steem-wise-core";
-import { Block, Transaction, Operation, CustomJsonOperation, VoteOperation } from "./blockchain-operations-types";
+import { Block, Operation, CustomJsonOperation, VoteOperation } from "./blockchain-operations-types";
 import { Database } from "./model/Database";
 import { StaticConfig } from "./StaticConfig";
 import { Log } from "./log"; const log = Log.getLogger();
@@ -32,8 +33,7 @@ export class Pusher {
     }
 
     private async loadBlockLoop(blockNum: number): Promise<void> {
-        if (blockNum % 10 == 0) log.info("Begin processing block " + blockNum);
-        else log.debug("Begin processing block " + blockNum);
+        log.debug("Begin processing block " + blockNum);
 
         return Bluebird.resolve()
         .then(() => this.blockLoader.loadBlock(blockNum))
@@ -43,11 +43,23 @@ export class Pusher {
         // (already processed operations will not be processed second time, as is described below).
         .then(() => this.database.setProperty("last_processed_block", blockNum + ""))
         .then(() => {
-            log.debug("Finished processing block " + blockNum);
+            if (blockNum % 50 == 0) { // print timestamp every 100 blocks
+                return steem.api.getBlockAsync(blockNum).then(
+                    /* got block */ (block: Block) => {
+                        log.info("Finished processing block " + blockNum + " (block " + block.block_id + " timestamp " + block.timestamp + "Z)");
+                        this.pushLagInfo(block);
+                    },
+                    /*error getting block: */ () => log.info("Finished processing block " + blockNum + " (could not load block timestamp)")
+                );
+            }
+            else if (blockNum % 10 == 0) log.info("Finished processing block " + blockNum);
+            else log.debug("Finished processing block " + blockNum);
+        })
+        .then(() => {
             return this.loadBlockLoop(blockNum + 1);
         }, (error: Error) => {
-            log.error(" Reversible error: " + error.message + ". Retrying in 3 seconds...");
-            setTimeout(() => this.loadBlockLoop(blockNum), 3000);
+            log.error(" Reversible error (b=" + blockNum + "): " + error.message + ". Retrying in 1.5 seconds...");
+            setTimeout(() => this.loadBlockLoop(blockNum), 1500);
         });
     }
 
@@ -78,5 +90,20 @@ export class Pusher {
         });
 
         if (opsToPush.length > 0) return this.database.pushWiseOperations(opsToPush);
+    }
+
+    private async pushLagInfo(block: Block) {
+        const blockTime = new Date(block.timestamp + "Z" /* process as UTC/GMT time zone*/);
+        const currentTime = new Date();
+        const lagMs = currentTime.getTime() - blockTime.getTime();
+        await this.database.setProperty("lag", Math.floor(lagMs / 1000) + "");
+        await this.database.setProperty("lag_iso", new Date(lagMs).toISOString() + "");
+        await this.database.setProperty("lag_update_time", currentTime.toISOString() + "");
+        await this.database.setProperty("lag_description", lagMs + "Lag field shows a delay between "
+            + "current timestamp and the timestamp of last processed block in seconds.");
+
+        if (lagMs > 6 * 1000) {
+            log.info("Current lag is " + Math.floor(lagMs / 1000) + "s. ISO=" + new Date(lagMs).toISOString());
+        }
     }
 }
