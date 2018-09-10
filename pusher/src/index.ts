@@ -44,6 +44,7 @@ log.info("Using steem api urls: " + steemApiUrls);
 async function startApp() {
     const database: Database = new Database(dbUrl);
     await database.connectAndInit(); // creates tables if necessary
+    await database.setProperty("block_sources", JSON.stringify(steemApiUrls));
 
     if (process.env.HEALTHCHECK_LISTEN_PORT) await healthcheckListen(parseInt(process.env.HEALTHCHECK_LISTEN_PORT));
 
