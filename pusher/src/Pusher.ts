@@ -95,14 +95,15 @@ export class Pusher {
     private async pushLagInfo(block: Block) {
         const blockTime = new Date(block.timestamp + "Z" /* process as UTC/GMT time zone*/);
         const currentTime = new Date();
-        const lagMs = currentTime.getTime() - blockTime.getTime();
-        await this.database.setProperty("lag", Math.floor(lagMs / 1000) + "");
+        let lagS = Math.floor((currentTime.getTime() - blockTime.getTime()) / 1000);
+        lagS = (lagS >= 3 ? lagS : 0);
+        await this.database.setProperty("lag", lagS + "");
         await this.database.setProperty("lag_update_time", currentTime.toISOString() + "");
         await this.database.setProperty("lag_description",  "Lag field shows a delay between "
             + "current timestamp and the timestamp of last processed block in seconds.");
 
-        if (lagMs > 6 * 1000) {
-            log.info("Current lag is " + Math.floor(lagMs / 1000) + "s. ISO=" + new Date(lagMs).toISOString());
+        if (lagS > 6) {
+            log.info("Current lag is " + lagS + "s.");
         }
     }
 }
