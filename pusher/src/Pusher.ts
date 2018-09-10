@@ -43,7 +43,7 @@ export class Pusher {
         // (already processed operations will not be processed second time, as is described below).
         .then(() => this.database.setProperty("last_processed_block", blockNum + ""))
         .then(() => {
-            if (blockNum % 50 == 0) { // print timestamp every 100 blocks
+            if (blockNum % 50 == 0) { // print timestamp every 50 blocks
                 return steem.api.getBlockAsync(blockNum).then(
                     /* got block */ (block: Block) => {
                         log.info("Finished processing block " + blockNum + " (block " + block.block_id + " timestamp " + block.timestamp + "Z)");
@@ -97,9 +97,8 @@ export class Pusher {
         const currentTime = new Date();
         const lagMs = currentTime.getTime() - blockTime.getTime();
         await this.database.setProperty("lag", Math.floor(lagMs / 1000) + "");
-        await this.database.setProperty("lag_iso", new Date(lagMs).toISOString() + "");
         await this.database.setProperty("lag_update_time", currentTime.toISOString() + "");
-        await this.database.setProperty("lag_description", lagMs + "Lag field shows a delay between "
+        await this.database.setProperty("lag_description",  "Lag field shows a delay between "
             + "current timestamp and the timestamp of last processed block in seconds.");
 
         if (lagMs > 6 * 1000) {
