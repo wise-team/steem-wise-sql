@@ -1,14 +1,14 @@
 import * as Bluebird  from "bluebird";
 import * as steem from "steem";
-import { Wise, DirectBlockchainApi, Api, EffectuatedSmartvotesOperation } from "steem-wise-core";
-import { Block, Operation, CustomJsonOperation, VoteOperation } from "./blockchain-operations-types";
+import { EffectuatedWiseOperation } from "steem-wise-core";
+import { Block } from "./blockchain-operations-types";
 import { Database } from "./model/Database";
 import { StaticConfig } from "./StaticConfig";
 import { Log } from "./log"; const log = Log.getLogger();
 import { WiseOperation } from "./model/WiseOperationModel";
-import { isSetRules } from "../node_modules/steem-wise-core/dist/protocol/SetRules";
-import { isSendVoteorder } from "../node_modules/steem-wise-core/dist/protocol/SendVoteorder";
-import { isConfirmVote } from "../node_modules/steem-wise-core/dist/protocol/ConfirmVote";
+import { SetRules } from "../node_modules/steem-wise-core/dist/protocol/SetRules";
+import { SendVoteorder } from "../node_modules/steem-wise-core/dist/protocol/SendVoteorder";
+import { ConfirmVote } from "../node_modules/steem-wise-core/dist/protocol/ConfirmVote";
 import { BufferedBlockLoader } from "./BufferedBlockLoader";
 import { Util } from "./util/util";
 
@@ -37,7 +37,7 @@ export class Pusher {
 
         return Bluebird.resolve()
         .then(() => this.blockLoader.loadBlock(blockNum))
-        .then((ops: EffectuatedSmartvotesOperation []) => this.pushOperations(ops))
+        .then((ops: EffectuatedWiseOperation []) => this.pushOperations(ops))
         .timeout(this.timeoutMs, new Error("Timeout (> " + this.timeoutMs + "ms while processing operations)"))
         // when timeout occurs an error is thrown. It is then catched few lines below
         // (already processed operations will not be processed second time, as is described below).
@@ -63,12 +63,12 @@ export class Pusher {
         });
     }
 
-    private async pushOperations(ops: EffectuatedSmartvotesOperation []) {
+    private async pushOperations(ops: EffectuatedWiseOperation []) {
         const opsToPush: WiseOperation.Attributes [] = [];
         ops.forEach(op => {
-            const opType = isSetRules(op.command) ? "set_rules" :
-                           isSendVoteorder(op.command) ? "send_voteorder" :
-                           isConfirmVote(op.command) ? "confirm_vote" : undefined;
+            const opType = SetRules.isSetRules(op.command) ? "set_rules" :
+                           SendVoteorder.isSendVoteorder(op.command) ? "send_voteorder" :
+                           ConfirmVote.isConfirmVote(op.command) ? "confirm_vote" : undefined;
             if (!opType) {
                 console.warn("Operation of unrecognized type: " + JSON.stringify(op) + ". Refusing to push.");
                 return;

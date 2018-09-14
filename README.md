@@ -76,3 +76,5 @@ This will create a backup directory and dump file in it.
 <br /><br />
 _Thank you,<br />
 Jędrzej Lewandowski_
+
+<!-- Prayer: Gloria Patri, et Filio, et Spiritui Sancto, sicut erat in principio et nunc et semper et in saecula saeculorum. Amen. In te, Domine, speravi: non confundar in aeternum. -->

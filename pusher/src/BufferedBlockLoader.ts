@@ -1,7 +1,7 @@
 import * as Bluebird from "bluebird";
 import * as _ from "lodash";
 import { Log } from "./log"; const log = Log.getLogger();
-import { DirectBlockchainApi, Wise, EffectuatedSmartvotesOperation } from "steem-wise-core";
+import { DirectBlockchainApi, Wise, EffectuatedWiseOperation } from "steem-wise-core";
 import { StaticConfig } from "./StaticConfig";
 
 export class BufferedBlockLoader {
@@ -21,7 +21,7 @@ export class BufferedBlockLoader {
         }
     }
 
-    public async loadBlock(blockNum: number): Promise<EffectuatedSmartvotesOperation []> {
+    public async loadBlock(blockNum: number): Promise<EffectuatedWiseOperation []> {
         const foundResult: BlockBufferElem | undefined = _.find(this.buffer, ["blockNum", blockNum]);
         if (foundResult && foundResult.loaded) {
             log.debug("BufferedBlockLoader.loadBlock: block already loaded " + blockNum);
@@ -41,7 +41,7 @@ export class BufferedBlockLoader {
         }
     }
 
-    private async doLoadBlock(blockNum: number, throwFailure: boolean): Promise<EffectuatedSmartvotesOperation []> {
+    private async doLoadBlock(blockNum: number, throwFailure: boolean): Promise<EffectuatedWiseOperation []> {
         log.debug("BufferedBlockLoader.doLoadBlock " + blockNum);
         // mark as loading
         const loadingElem: BlockBufferElem = {
@@ -63,7 +63,7 @@ export class BufferedBlockLoader {
         }, 4000);
 
         return api.getAllWiseOperationsInBlock(blockNum, new Wise("-no-username", api).getProtocol())
-        .then((ops: EffectuatedSmartvotesOperation []) => {
+        .then((ops: EffectuatedWiseOperation []) => {
             log.debug("BufferedBlockLoader.doLoadBlock(" + blockNum + ") success");
             loadingElem.ops = ops;
             loadingElem.loaded = true;
@@ -82,5 +82,5 @@ export class BufferedBlockLoader {
 interface BlockBufferElem {
     blockNum: number;
     loaded: boolean;
-    ops: EffectuatedSmartvotesOperation [];
+    ops: EffectuatedWiseOperation [];
 }

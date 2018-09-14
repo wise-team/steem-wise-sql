@@ -31,7 +31,7 @@ const steemApiUrls = (process.env.STEEM_API_URL || "https://api.steemit.com/").s
 
 const apis: DirectBlockchainApi [] = steemApiUrls.map(url => {
     const steemOptions: object = { url: url, uri: url };
-    return new DirectBlockchainApi("-no-user-", "-no-postingwif-", steemOptions);
+    return new DirectBlockchainApi("", steemOptions);
 });
 
 
