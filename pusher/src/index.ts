@@ -27,7 +27,7 @@ process.on("unhandledRejection", (err) => {
  ** CONFIG **
  ************/
 const dbUrl = process.env.DATABASE_URL || "postgres://localhost:5432/db";
-const steemApiUrls = (process.env.STEEM_API_URL || "https://api.steemit.com/").split(",");
+const steemApiUrls = (process.env.STEEM_API_URL || "https://api.steemit.com").split(",");
 
 const apis: DirectBlockchainApi [] = steemApiUrls.map(url => {
     const steemOptions: object = { url: url, uri: url };

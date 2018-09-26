@@ -24,9 +24,9 @@ services:
       - "db"
     environment:
       DATABASE_URL: postgres://pusher:pusher@db:5432/app_db
-      STEEM_API_URL: https://api.steemit.com/,https://gtg.steem.house:8090,https://steemd.minnowsupportproject.org/
+      STEEM_API_URL: https://api.steemit.com
       # START_BLOCK_NUM: 25021220 # interesting moment for testing
-      LOG_LEVEL: debug
+      LOG_LEVEL: info
 
   postgrest:
     image: postgrest/postgrest
