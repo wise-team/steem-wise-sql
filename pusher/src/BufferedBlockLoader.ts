@@ -71,6 +71,7 @@ export class BufferedBlockLoader {
         },
         (error: Error) => {
             log.debug("BufferedBlockLoader.doLoadBlock(" + blockNum + ") failure: " + error.message);
+            console.error(error);
             const elemIndex = _.findIndex(this.buffer, ["blockNum", blockNum]);
             if (elemIndex >= 0) this.buffer.splice(elemIndex, 1);
             if (throwFailure) throw error;
