@@ -1,10 +1,20 @@
 version: "3"
+
+networks:
+  proxy-tier:
+    external:
+      name: caddy-proxy
+  default:
+    driver: bridge
+
 services:
-  db:
+  wise_sql_db:
     image: postgres:10-alpine
-    container_name: steem-wise-sql_db_1
+    container_name: wise_sql_db
     expose: # expose exposes ports only inside this stack and do not publish them to host machine.
       - "5432"
+    networks:
+      - default
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -18,12 +28,15 @@ services:
 #    ports:
 #      - 3002:3002
 
-  pusher:
+  wise_sql_pusher:
     build: ./pusher
+    command: ./wait-for wise_sql_db:5432 -- npm start
     depends_on:
-      - "db"
+      - "wise_sql_db"
+    networks:
+      - default
     environment:
-      DATABASE_URL: postgres://pusher:pusher@db:5432/app_db
+      DATABASE_URL: postgres://pusher:pusher@wise_sql_db:5432/app_db
       STEEM_API_URL: "https://api.steemit.com"
       # START_BLOCK_NUM: 25021220 # interesting moment for testing
       LOG_LEVEL: info
@@ -34,23 +47,38 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - "db"
-      - "pusher"
+      - "wise_sql_db"
+      - "wise_sql_pusher"
+    networks:
+      - proxy-tier
+      - default
     environment: # https://github.com/PostgREST/postgrest/blob/f6c1ff810e92321f2cd522058d5c6fd74cb64226/docker/postgrest.conf
-      # PGRST_SERVER_PROXY_URI: muon.jblew.pl
-      PGRST_DB_URI: postgres://postgrest:postgrest@db:5432/app_db
+      PGRST_SERVER_PROXY_URI: http://sql.wise.vote/
+      PGRST_DB_URI: postgres://postgrest:postgrest@wise_sql_db:5432/app_db
       PGRST_DB_SCHEMA: api
       PGRST_DB_ANON_ROLE: postgrest_anon
       PGRST_MAX_ROWS: 1000
+      VIRTUAL_HOST: "sql.wise.vote"
+      VIRTUAL_NETWORK: "caddy-proxy"
+      VIRTUAL_PORT: 3000
+      CADDY_TLS: "off"
+      CADDY_TIMEOUTS: "read 5m, write 2m"
     volumes:
       - "./postgrest:/postgrest_service:ro"
 
-  api_specification:
-    image: nginx
-    volumes:
-      - ./api_specification:/usr/share/nginx/html:ro
-    ports:
-      - "3001:80"
+  #wise_sql_swagger_host:
+  #  image: nginx
+  #  volumes:
+  #    - ./api_specification:/usr/share/nginx/html:ro
+  #  networks:
+  #    - proxy-tier
+  #  environment:
+  #    VIRTUAL_HOST: "sql.wise.vote"
+  #    VIRTUAL_NETWORK: "caddy-proxy"
+  #    VIRTUAL_PORT: 80
+  #    CADDY_TLS: "off"
+  #    CADDY_TIMEOUTS: "read 5m, write 2m"
+  #  restart: always
 
 volumes:
   pgdata: # steem-wise-sql_pgdata
