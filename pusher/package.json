@@ -34,6 +34,6 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/noisy-witness/steem-wise-sql.git"
+    "url": "git+https://github.com/wise-team/steem-wise-sql.git"
   }
 }

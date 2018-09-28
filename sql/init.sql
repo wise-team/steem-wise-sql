@@ -12,7 +12,7 @@ COMMENT ON SCHEMA api IS $$
 
 Steem WISE SQL is a database with all WISE operations, synced with blockchain.
 
-More info & source: [https://github.com/noisy-witness/steem-wise-sql](https://github.com/noisy-witness/steem-wise-sql)
+More info & source: [https://github.com/wise-team/steem-wise-sql](https://github.com/wise-team/steem-wise-sql)
 $$;
 
 

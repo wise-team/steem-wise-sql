@@ -55,7 +55,7 @@ http://muon.jblew.pl:3000/operations?limit=100&offset=100 -- get next 100 operat
 ## Run WiseSQL by yourself
 
 ```bash
-$ git clone https://github.com/noisy-witness/steem-wise-sql/
+$ git clone https://github.com/wise-team/steem-wise-sql/
 $ docker-compose up
 ```
 
