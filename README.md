@@ -1,4 +1,7 @@
 # Steem WISE SQL
+
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) [![License](https://img.shields.io/github/license/wise-team/steem-wise-sql.svg?style=flat-square)](https://github.com/wise-team/steem-wise-sql/blob/master/LICENSE) [![Chat](https://img.shields.io/badge/chat-on%20steem.chat-6b11ff.svg?style=flat-square)](https://steem.chat/channel/wise) [![Wise operations count](https://img.shields.io/badge/dynamic/json.svg?label=wise%20operations%20count&url=http%3A%2F%2Fsql.wise.vote%3A80%2Foperations%3Fselect%3Dcount&query=%24%5B0%5D.count&colorB=blue&style=flat-square)](http://sql.wise.vote:80/operations?select=moment,delegator,voter,operation_type&order=moment.desc)
+
 A database with all WISE operations, synced with blockchain.
 
 It consists of four services: 
