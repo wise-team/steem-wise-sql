@@ -30,10 +30,20 @@
     "tslint": "^5.11.0",
     "typescript": "^2.9.2"
   },
-  "author": "Jędrzej lewandowski <jedrzejblew@gmail.com> (https://jedrzej.lewandowski.doctor)",
-  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wise-team/steem-wise-sql.git"
-  }
+  },
+  "keywords": [
+    "steem", "blockchain", "wise"
+  ],
+  "author": "The Wise Team (https://wise-team.io/)",
+  "contributors": [
+    "Jędrzej Lewandowski <jedrzejblew@gmail.com> (https://jedrzej.lewandowski.doctor/)"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wise-team/steem-wise-sql/issues"
+  },
+  "homepage": "https://wise.vote/"
 }
