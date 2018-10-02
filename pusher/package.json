@@ -1,6 +1,6 @@
 {
   "name": "steem-wise-sql-pusher",
-  "version": "1.1.0",
+  "version": "1.2.2",
   "description": "Steem WISE sql pusher",
   "main": "dist/index.js",
   "engines": {
@@ -35,7 +35,9 @@
     "url": "git+https://github.com/wise-team/steem-wise-sql.git"
   },
   "keywords": [
-    "steem", "blockchain", "wise"
+    "steem",
+    "blockchain",
+    "wise"
   ],
   "author": "The Wise Team (https://wise-team.io/)",
   "contributors": [
