@@ -29,7 +29,7 @@ export class Database {
         .then(() => this.wiseOperationsModel.sync())
         .then(() => this.propertiesModel.sync())
 
-        .then(() => "CREATE OR REPLACE VIEW api.operations_per_day AS select count(*), date_trunc('day', timestamp) as date from api.operations group by date_trunc('day', timestamp) order by date_trunc('day', timestamp) desc;")
+        .then(() => this.sequelize.query("CREATE OR REPLACE VIEW api.operations_per_day AS select count(*), date_trunc('day', timestamp) as date from api.operations group by date_trunc('day', timestamp) order by date_trunc('day', timestamp) desc;"))
         .then(() => this.sequelize.query("GRANT SELECT ON api.operations TO postgrest_anon;"))
         .then(() => this.sequelize.query("GRANT SELECT ON api.properties TO postgrest_anon;"))
         .then(() => this.sequelize.query("GRANT SELECT ON api.operations_per_day TO postgrest_anon;"))
