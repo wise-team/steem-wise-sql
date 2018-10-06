@@ -1,6 +1,6 @@
 # Steem WISE SQL
 
-<!--§ data.config.generateDefaultBadges(data) §-->
+<!--§ data.config.repository.readme.generateDefaultBadges(data) §-->
 [![License](https://img.shields.io/github/license/wise-team/steem-wise-sql.svg?style=flat-square)](https://github.com/wise-team/steem-wise-sql/blob/master/LICENSE) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) [![Chat](https://img.shields.io/badge/chat%20on%20discord-6b11ff.svg?style=flat-square)](https://discordapp.com/invite/CwxQDbG) [![Wise operations count](https://img.shields.io/badge/dynamic/json.svg?label=wise%20operations%20count&url=http%3A%2F%2Fsql.wise.vote%3A%2Foperations%3Fselect%3Dcount&query=%24%5B0%5D.count&colorB=blue&style=flat-square)](http://sql.wise.vote/operations?select=moment,delegator,voter,operation_type&order=moment.desc)
 <!--§§.-->
 
@@ -16,7 +16,7 @@ It consists of four services:
 
 ## Try and use our API online
 
-I have launched a temporary version of steem-wise-sql at **<!--§ "[" + data.config.sqlEndpointUrl + "](" + data.config.sqlEndpointUrl + ")" §-->[http://sql.wise.vote/](http://sql.wise.vote/)<!--§§.-->**. Feel free to use and try it, but beware that it was just launched and the synchronization may not have been finished yet.
+I have launched a temporary version of steem-wise-sql at **<!--§ "[" + data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host + "](" + data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host + ")" §-->[http://sql.wise.vote](http://sql.wise.vote)<!--§§.-->**. Feel free to use and try it, but beware that it was just launched and the synchronization may not have been finished yet.
 
 
 
@@ -24,34 +24,14 @@ I have launched a temporary version of steem-wise-sql at **<!--§ "[" + data.con
 
 The Api is provided by Postgrest. Detailed instructions on making api calls can be found here: [http://postgrest.org/en/v5.0/api.html](http://postgrest.org/en/v5.0/api.html).
 
-Let's assume that api host is <!--§ "[" + data.config.sqlEndpointUrl + "](" + data.config.sqlEndpointUrl + ")" §-->[http://sql.wise.vote/](http://sql.wise.vote/)<!--§§.-->.
+Let's assume that api host is <!--§ "[" + data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host + "](" + data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host + ")" §-->[http://sql.wise.vote](http://sql.wise.vote)<!--§§.-->.
 
-<!--§ value.replace(/https?:\/\/[^\/]+\//gmui, d(data.config.sqlEndpointUrl)) §-->
+<!--§ value.replace(/https?:\/\/[^\/]+\//gmui, d(data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host)) §-->
 ```sql
-http://sql.wise.vote/                   —- openAPI specification
-http://sql.wise.vote/operations         -- list all operations
-http://sql.wise.vote/properties         -- list all properties
-http://sql.wise.vote/rulesets           -- list all rulesets
-http://sql.wise.vote/last_confirmation  -- list last confirmations of specified users (moment of the last activity of a daemon)
-
---- specify only some fields:
-http://sql.wise.vote/operations?select=voter,delegator,moment
-/* in operations table available fields are: id, block_num, transaction_num, transaction_id, 
-   timestamp, voter, delegator, operation_type, json_str, moment */
-
---- operators (Full list can be found here: http://sql.wise.vote/en/v5.0/api.html)
-http://sql.wise.vote/operations?voter=eq.noisy -- voter == (equals) noisy
-http://sql.wise.vote/operations?moment=lt.23029285.0038 -- moment less than 23029285.0038. Format of moment is block_num.trx_num (trx_num is padded with zeros to four digits)
-http://sql.wise.vote/operations?block_num=gt.22039180 -- block_num greater than 22039180
-http://sql.wise.vote/operations?block_num=lt.22039180&operation_type=eq.set_rules -- block_num less than 22039180 & operation_type==set_rules
-
---- ordering:
-http://sql.wise.vote/operations?order=moment.desc -- from the newest to the oldest
-http://sql.wise.vote/operations?order=moment.asc -- from the oldest to the newest
+http://sql.wise.votesql.wise.votesql.wise.votesql.wise.votesql.wise.voteoperations?order=moment.asc -- from the oldest to the newest
 
 -- pagination:
-http://sql.wise.vote/operations?limit=100&offset=0 -- get first 100 operations
-http://sql.wise.vote/operations?limit=100&offset=100 -- get next 100 operations
+http://sql.wise.votesql.wise.voteoperations?limit=100&offset=100 -- get next 100 operations
 ```
 <!--§§.-->
 
@@ -79,7 +59,7 @@ This will create a backup directory and dump file in it.
 
 
 
-<!--§ data.config.generateHelpMd(data) §-->
+<!--§ data.config.repository.readme.generateHelpMd(data) §-->
 ## Where to get help?
 
 - Feel free to talk with us on our chat: {https://discordapp.com/invite/CwxQDbG} .
@@ -91,7 +71,7 @@ You can also ask questions as issues in appropriate repository: See [issues for 
 <!--§§.-->
 
 
-<!--§ data.config.generateHelpUsMd(data) §-->
+<!--§ data.config.repository.readme.generateHelpUsMd(data) §-->
 ## Contribute to steem Wise
 
 We welcome warmly:
