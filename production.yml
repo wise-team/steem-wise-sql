@@ -54,11 +54,13 @@ services:
       - proxy-tier
       - default
     environment: # https://github.com/PostgREST/postgrest/blob/f6c1ff810e92321f2cd522058d5c6fd74cb64226/docker/postgrest.conf
+      #§ "PGRST_SERVER_PROXY_URI: " + data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host + "/"
       PGRST_SERVER_PROXY_URI: http://sql.wise.vote/
       PGRST_DB_URI: postgres://postgrest:postgrest@wise_sql_db:5432/app_db
       PGRST_DB_SCHEMA: api
       PGRST_DB_ANON_ROLE: postgrest_anon
       PGRST_MAX_ROWS: 1000
+      #§ "VIRTUAL_HOST: \"" + data.config.sql.endpoint.host + "\""
       VIRTUAL_HOST: "sql.wise.vote"
       VIRTUAL_NETWORK: "caddy-proxy"
       VIRTUAL_PORT: 3000
@@ -74,7 +76,8 @@ services:
   #  networks:
   #    - proxy-tier
   #  environment:
-  #    VIRTUAL_HOST: "sql.wise.vote"
+  #    #§ "#    VIRTUAL_HOST: \"" + data.config.sql.endpoint.host + "\""
+  #     VIRTUAL_HOST: "sql.wise.vote"
   #    VIRTUAL_NETWORK: "caddy-proxy"
   #    VIRTUAL_PORT: 80
   #    CADDY_TLS: "off"
