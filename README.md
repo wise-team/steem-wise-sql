@@ -26,12 +26,32 @@ The Api is provided by Postgrest. Detailed instructions on making api calls can 
 
 Let's assume that api host is <!--§ "[" + data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host + "](" + data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host + ")" §-->[http://sql.wise.vote](http://sql.wise.vote)<!--§§.-->.
 
-<!--§ value.replace(/https?:\/\/[^\/]+\//gmui, d(data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host)) §-->
+<!--§ value.replace(/https?:\/\/[^\/]+\//gmui, d(data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host) + "/") §-->
 ```sql
-http://sql.wise.votesql.wise.votesql.wise.votesql.wise.votesql.wise.voteoperations?order=moment.asc -- from the oldest to the newest
+-http://sql.wise.vote/                   —- openAPI specification
+http://sql.wise.vote/operations         -- list all operations
+http://sql.wise.vote/properties         -- list all properties
+http://sql.wise.vote/rulesets           -- list all rulesets
+http://sql.wise.vote/last_confirmation  -- list last confirmations of specified users (moment of the last activity of a daemon)
+
+--- specify only some fields:
+http://sql.wise.vote/operations?select=voter,delegator,moment
+/* in operations table available fields are: id, block_num, transaction_num, transaction_id, 
+   timestamp, voter, delegator, operation_type, json_str, moment */
+
+--- operators (Full list can be found here: http://sql.wise.vote/en/v5.0/api.html)
+http://sql.wise.vote/operations?voter=eq.noisy -- voter == (equals) noisy
+http://sql.wise.vote/operations?moment=lt.23029285.0038 -- moment less than 23029285.0038. Format of moment is block_num.trx_num (trx_num is padded with zeros to four digits)
+http://sql.wise.vote/operations?block_num=gt.22039180 -- block_num greater than 22039180
+http://sql.wise.vote/operations?block_num=lt.22039180&operation_type=eq.set_rules -- block_num less than 22039180 & operation_type==set_rules
+
+--- ordering:
+http://sql.wise.vote/operations?order=moment.desc -- from the newest to the oldest
+http://sql.wise.vote/operations?order=moment.asc -- from the oldest to the newest
 
 -- pagination:
-http://sql.wise.votesql.wise.voteoperations?limit=100&offset=100 -- get next 100 operations
+http://sql.wise.vote/operations?limit=100&offset=0 -- get first 100 operations
+http://sql.wise.vote/operations?limit=100&offset=100 -- get next 100 operations
 ```
 <!--§§.-->
 
