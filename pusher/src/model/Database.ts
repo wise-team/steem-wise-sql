@@ -30,7 +30,9 @@ export class Database {
         await this.propertiesModel.sync();
 
         await Views.setupViews(this.sequelize);
-        await this.sequelize.query("CREATE OR REPLACE VIEW api.operations_per_day AS select count(*), date_trunc('day', timestamp) as date from api.operations group by date_trunc('day', timestamp) order by date_trunc('day', timestamp) desc;"))
+        await this.sequelize.query(`CREATE OR REPLACE VIEW api.operations_per_day AS
+                    select count(*), date_trunc('day', timestamp) as date from api.operations group by date_trunc('day', timestamp) order by date_trunc('day', timestamp) desc;
+        `);
         await this.sequelize.query(`CREATE OR REPLACE VIEW api.delegators AS
                     SELECT delegator, count(*) as operations_count,
                     max(moment) as latest_moment, min(moment) as first_moment,
@@ -63,7 +65,6 @@ export class Database {
         await this.sequelize.query("GRANT SELECT ON api.delegators TO postgrest_anon;");
         await this.sequelize.query("GRANT SELECT ON api.voters TO postgrest_anon;");
         await this.sequelize.query("GRANT SELECT ON api.delegators_voters TO postgrest_anon;");
-        await this.sequelize.query("GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA api TO postgrest_anon;");
         await this.sequelize.query("GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA api TO postgrest_anon;");
         console.log("Setting up database done");
         await this.setProperty("db_initialization_successful", "true");
