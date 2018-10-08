@@ -28,6 +28,7 @@ export class Database {
         await this.sequelize.authenticate();
         await this.wiseOperationsModel.sync();
         await this.propertiesModel.sync();
+        await this.setProperty("db_initialization", "in_proggress");
 
         await Views.setupViews(this.sequelize);
         await this.sequelize.query(`CREATE OR REPLACE VIEW api.operations_per_day AS
@@ -67,7 +68,7 @@ export class Database {
         await this.sequelize.query("GRANT SELECT ON api.delegators_voters TO postgrest_anon;");
         await this.sequelize.query("GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA api TO postgrest_anon;");
         console.log("Setting up database done");
-        await this.setProperty("db_initialization_successful", "true");
+        await this.setProperty("db_initialization_successful", "success");
     }
 
     public async pushWiseOperations(operations: WiseOperation.Attributes []) {
