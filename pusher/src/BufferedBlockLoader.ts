@@ -22,6 +22,8 @@ export class BufferedBlockLoader {
     }
 
     public async loadBlock(blockNum: number): Promise<EffectuatedWiseOperation []> {
+        if (this.buffer.length > 0 && this.buffer[0].blockNum < blockNum - 10) this.cleanupOlder(); // perform cleanup only if blocks are older that the requested one
+
         const foundResult: BlockBufferElem | undefined = _.find(this.buffer, ["blockNum", blockNum]);
         if (foundResult && foundResult.loaded) {
             log.debug("BufferedBlockLoader.loadBlock: block already loaded " + blockNum);
@@ -62,21 +64,25 @@ export class BufferedBlockLoader {
             }
         }, 4000);
 
-        return api.getAllWiseOperationsInBlock(blockNum, new Wise("-no-username", api).getProtocol())
-        .then((ops: EffectuatedWiseOperation []) => {
+        try {
+            const ops = await api.getAllWiseOperationsInBlock(blockNum, new Wise("-no-username", api).getProtocol());
+
             log.debug("BufferedBlockLoader.doLoadBlock(" + blockNum + ") success");
             loadingElem.ops = ops;
             loadingElem.loaded = true;
+
             return ops;
-        },
-        (error: Error) => {
-            log.debug("BufferedBlockLoader.doLoadBlock(" + blockNum + ") failure: " + error.message);
+        } catch (error) {
+            log.debug("BufferedBlockLoader.doLoadBlock(" + blockNum + ") failure catched: " + error.message);
             console.error(error);
             const elemIndex = _.findIndex(this.buffer, ["blockNum", blockNum]);
             if (elemIndex >= 0) this.buffer.splice(elemIndex, 1);
-            if (throwFailure) throw error;
+            if (throwFailure) {
+                log.debug("Throwing failure as requested: BufferedBlockLoader.doLoadBlock(throwFailure=true)");
+                throw error;
+            }
             else return [];
-        });
+        }
     }
 }
 

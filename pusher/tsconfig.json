@@ -2,15 +2,12 @@
     "compilerOptions": {
         "module": "commonjs",
         "target": "es6",
-        "declaration": true,
         "strict": true,
         "moduleResolution": "node",
         "allowSyntheticDefaultImports": false,
         "noImplicitAny": true,
-        "allowJs": false,
+        "allowJs": true,
         "sourceMap": true,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
         "outDir": "dist",
         "baseUrl": "src/",
         "paths": {

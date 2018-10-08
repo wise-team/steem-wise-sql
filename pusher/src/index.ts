@@ -17,9 +17,11 @@ if (process.env.LOG_LEVEL) {
     console.log("Log level set to \"" + process.env.LOG_LEVEL + "\"");
 }
 process.on("unhandledRejection", (err) => {
+    console.error("Unhandled promise");
+    log.error("UNHANDLED PROMISE -> aborting exit");
     log.error(err);
     console.error(err);
-    process.exit(1);
+    // process.exit(1);
 });
 
 

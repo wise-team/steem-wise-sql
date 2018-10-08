@@ -34,33 +34,38 @@ export class Pusher {
 
     private async loadBlockLoop(blockNum: number): Promise<void> {
         log.debug("Begin processing block " + blockNum);
-
-        return Bluebird.resolve()
-        .then(() => this.blockLoader.loadBlock(blockNum))
-        .then((ops: EffectuatedWiseOperation []) => this.pushOperations(ops))
-        .timeout(this.timeoutMs, new Error("Timeout (> " + this.timeoutMs + "ms while processing operations)"))
-        // when timeout occurs an error is thrown. It is then catched few lines below
-        // (already processed operations will not be processed second time, as is described below).
-        .then(() => this.database.setProperty("last_processed_block", blockNum + ""))
-        .then(() => {
-            if (blockNum % 50 == 0) { // print timestamp every 50 blocks
-                return steem.api.getBlockAsync(blockNum).then(
-                    /* got block */ (block: Block) => {
-                        log.info("Finished processing block " + blockNum + " (block " + block.block_id + " timestamp " + block.timestamp + "Z)");
-                        this.pushLagInfo(block);
-                    },
-                    /*error getting block: */ () => log.info("Finished processing block " + blockNum + " (could not load block timestamp)")
-                );
-            }
-            else if (blockNum % 10 == 0) log.info("Finished processing block " + blockNum);
-            else log.debug("Finished processing block " + blockNum);
-        })
-        .then(() => {
-            return this.loadBlockLoop(blockNum + 1);
-        }, (error: Error) => {
-            log.error(" Reversible error (b=" + blockNum + "): " + error.message + ". Retrying in 1.5 seconds...");
+        try {
+            return Bluebird.resolve()
+            .then(() => this.blockLoader.loadBlock(blockNum))
+            .then((ops: EffectuatedWiseOperation []) => this.pushOperations(ops))
+            .timeout(this.timeoutMs, new Error("Timeout (> " + this.timeoutMs + "ms while processing operations)"))
+            // when timeout occurs an error is thrown. It is then catched few lines below
+            // (already processed operations will not be processed second time, as is described below).
+            .then(() => this.database.setProperty("last_processed_block", blockNum + ""))
+            .then(() => {
+                if (blockNum % 50 == 0) { // print timestamp every 50 blocks
+                    return steem.api.getBlockAsync(blockNum).then(
+                        /* got block */ (block: Block) => {
+                            log.info("Finished processing block " + blockNum + " (block " + block.block_id + " timestamp " + block.timestamp + "Z)");
+                            this.pushLagInfo(block);
+                        },
+                        /*error getting block: */ () => log.info("Finished processing block " + blockNum + " (could not load block timestamp)")
+                    );
+                }
+                else if (blockNum % 10 == 0) log.info("Finished processing block " + blockNum);
+                else log.debug("Finished processing block " + blockNum);
+            })
+            .then(() => {
+                return this.loadBlockLoop(blockNum + 1);
+            }, (error: Error) => {
+                log.error(" Reversible error (b=" + blockNum + "): " + error.message + ". Retrying in 1.5 seconds...");
+                setTimeout(() => this.loadBlockLoop(blockNum), 1500);
+            });
+        }
+        catch (error) {
+            log.error("WARNING! Reversible error catched outside of promise (b=" + blockNum + "): " + error.message + ". Retrying in 1.5 seconds...");
             setTimeout(() => this.loadBlockLoop(blockNum), 1500);
-        });
+        }
     }
 
     private async pushOperations(ops: EffectuatedWiseOperation []) {
