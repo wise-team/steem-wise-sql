@@ -77,7 +77,7 @@ services:
   #    - proxy-tier
   #  environment:
   #    #§ "#    VIRTUAL_HOST: \"" + data.config.sql.endpoint.host + "\""
-  #     VIRTUAL_HOST: "sql.wise.vote"
+  #    VIRTUAL_HOST: "sql.wise.vote"
   #    VIRTUAL_NETWORK: "caddy-proxy"
   #    VIRTUAL_PORT: 80
   #    CADDY_TLS: "off"
