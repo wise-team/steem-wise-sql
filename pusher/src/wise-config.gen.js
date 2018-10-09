@@ -44,6 +44,7 @@ export const data = {
       "steem": {
         "account": "wise-team",
       },
+      "securityEmail": "jedrzejblew@gmail.com",
     },
     "npm": {
       "node": {
@@ -51,6 +52,14 @@ export const data = {
       },
       "keywords": [ "steem", "blockchain", "wise" ],
       "author": "The Wise Team (https://wise-team.io/)",
+    },
+    "docker": {
+      "labels": {
+        "domain": "vote.wise",
+        "defaultLabels": [ () => ".wise-version=\"1.2.2\"", () => ".license=\"MIT\"", () => ".repository=\"steem-wise-sql\"" ],
+      },
+      "maintainer": "The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>",
+      "generateDockerfileFrontMatter": () => "LABEL maintainer=\"The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>\"\nLABEL vote.wise.wise-version=\"1.2.2\"\nLABEL vote.wise.license=\"MIT\"\nLABEL vote.wise.repository=\"steem-wise-sql\"",
     },
     "repository": {
       "github": {
@@ -102,7 +111,7 @@ export const data = {
           "nodePath": "",
         },
         "hub": {
-          "name": "../wise-hub",
+          "name": "wise-hub",
           "isNode": true,
           "isNpm": true,
           "nodePath": "/wise-hub-frontend",
@@ -128,7 +137,7 @@ export const data = {
       },
       "endpoint": {
         "host": "sql.wise.vote",
-        "schema": "http",
+        "schema": "https",
       },
     },
     "manual": {
@@ -136,10 +145,17 @@ export const data = {
     },
     "hub": {
       "production": {
-        "url": "http://wise.vote/",
+        "host": "hub.wise.vote",
+        "schema": "https",
       },
-      "development": {
-        "url": "http://portal.wise.vote/",
+      "visual": {
+        "read": {
+          "lastActivity": {
+            "numOfOpsToShow": 50,
+            "trxLinkBase": "https://steemd.com/tx/{trx}",
+            "articleLinkBase": "https://steemit.com/@{author}/{permlink}",
+          },
+        },
       },
     },
     "test": {

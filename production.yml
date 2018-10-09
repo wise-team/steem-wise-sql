@@ -45,17 +45,18 @@ services:
   postgrest:
     image: postgrest/postgrest
     command: bash -c "echo \"Waiting 12s...\" && sleep 12 && echo \"Starting postgrest\" && exec postgrest /etc/postgrest.conf"
-    ports:
-      - "3000:3000"
+    expose:
+      - 3000
     depends_on:
       - "wise_sql_db"
       - "wise_sql_pusher"
     networks:
       - proxy-tier
       - default
-    environment: # https://github.com/PostgREST/postgrest/blob/f6c1ff810e92321f2cd522058d5c6fd74cb64226/docker/postgrest.conf
+    environment:
+      # https://github.com/PostgREST/postgrest/blob/f6c1ff810e92321f2cd522058d5c6fd74cb64226/docker/postgrest.conf
       #§ "PGRST_SERVER_PROXY_URI: " + data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host + "/"
-      PGRST_SERVER_PROXY_URI: http://sql.wise.vote/
+      PGRST_SERVER_PROXY_URI: https://sql.wise.vote/
       PGRST_DB_URI: postgres://postgrest:postgrest@wise_sql_db:5432/app_db
       PGRST_DB_SCHEMA: api
       PGRST_DB_ANON_ROLE: postgrest_anon
@@ -64,7 +65,8 @@ services:
       VIRTUAL_HOST: "sql.wise.vote"
       VIRTUAL_NETWORK: "caddy-proxy"
       VIRTUAL_PORT: 3000
-      CADDY_TLS: "off"
+      #§ 'CADDY_TLS: ' + ( data.config.sql.endpoint.schema === "https" ? '"yes"' : '"no"')
+      CADDY_TLS: "yes"
       CADDY_TIMEOUTS: "read 5m, write 2m"
     volumes:
       - "./postgrest:/postgrest_service:ro"
@@ -76,11 +78,12 @@ services:
   #  networks:
   #    - proxy-tier
   #  environment:
-  #    #§ "#    VIRTUAL_HOST: \"" + data.config.sql.endpoint.host + "\""
+  ##§ "#    VIRTUAL_HOST: \"" + data.config.sql.endpoint.host + "\""
   #    VIRTUAL_HOST: "sql.wise.vote"
   #    VIRTUAL_NETWORK: "caddy-proxy"
   #    VIRTUAL_PORT: 80
-  #    CADDY_TLS: "off"
+  #§ '#    CADDY_TLS: ' + ( data.config.sql.endpoint.schema === "https" ? '"yes"' : '"no"')
+  #    CADDY_TLS: "yes"
   #    CADDY_TIMEOUTS: "read 5m, write 2m"
   #  restart: always
 
