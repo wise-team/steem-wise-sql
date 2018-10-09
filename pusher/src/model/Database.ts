@@ -31,41 +31,9 @@ export class Database {
         await this.setProperty("db_initialization", "in_proggress");
 
         await Views.setupViews(this.sequelize);
-        await this.sequelize.query(`CREATE OR REPLACE VIEW api.operations_per_day AS
-                    select count(*), date_trunc('day', timestamp) as date from api.operations group by date_trunc('day', timestamp) order by date_trunc('day', timestamp) desc;
-        `);
-        await this.sequelize.query(`CREATE OR REPLACE VIEW api.delegators AS
-                    SELECT delegator, count(*) as operations_count,
-                    max(moment) as latest_moment, min(moment) as first_moment,
-                    max(timestamp) as latest_timestamp, min(timestamp) as first_timestamp,
-                    count(DISTINCT (voter)) as voters_count,
-                    count(CASE WHEN operation_type = 'send_voteorder' THEN 1 END) as voteorders, count(CASE WHEN operation_type = 'confirm_vote' THEN 1 END) as confirmed_voteorders,
-                    max(CASE WHEN operation_type = 'send_voteorder' THEN moment END) as last_voteorder, max(CASE WHEN operation_type = 'confirm_vote' THEN moment END) as last_confirmation
-                    FROM api.operations GROUP BY delegator;
-        `);
-        await this.sequelize.query(`CREATE OR REPLACE VIEW api.voters AS
-                    SELECT voter, count(*) as operations_count,
-                    max(moment) as latest_moment, min(moment) as first_moment,
-                    max(timestamp) as latest_timestamp, min(timestamp) as first_timestamp,
-                    count(DISTINCT (delegator)) as delegators_count,
-                    count(CASE WHEN operation_type = 'send_voteorder' THEN 1 END) as voteorders, count(CASE WHEN operation_type = 'confirm_vote' THEN 1 END) as confirmed_voteorders,
-                    max(CASE WHEN operation_type = 'send_voteorder' THEN moment END) as last_voteorder, max(CASE WHEN operation_type = 'confirm_vote' THEN moment END) as last_confirmation
-                    FROM api.operations GROUP BY voter;
-        `);
-        await this.sequelize.query(`CREATE OR REPLACE VIEW api.delegators_voters AS
-                    SELECT delegator, voter, count(*) as operations_count,
-                    max(moment) as latest_moment, min(moment) as first_moment,
-                    max(timestamp) as latest_timestamp, min(timestamp) as first_timestamp,
-                    count(CASE WHEN operation_type = 'send_voteorder' THEN 1 END) as voteorders, count(CASE WHEN operation_type = 'confirm_vote' THEN 1 END) as confirmed_voteorders,
-                    max(CASE WHEN operation_type = 'send_voteorder' THEN moment END) as last_voteorder, max(CASE WHEN operation_type = 'confirm_vote' THEN moment END) as last_confirmation
-                    FROM api.operations GROUP BY delegator, voter;
-        `);
+
         await this.sequelize.query("GRANT SELECT ON api.operations TO postgrest_anon;");
         await this.sequelize.query("GRANT SELECT ON api.properties TO postgrest_anon;");
-        await this.sequelize.query("GRANT SELECT ON api.operations_per_day TO postgrest_anon;");
-        await this.sequelize.query("GRANT SELECT ON api.delegators TO postgrest_anon;");
-        await this.sequelize.query("GRANT SELECT ON api.voters TO postgrest_anon;");
-        await this.sequelize.query("GRANT SELECT ON api.delegators_voters TO postgrest_anon;");
         await this.sequelize.query("GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA api TO postgrest_anon;");
         console.log("Setting up database done");
         await this.setProperty("db_initialization", "success");
