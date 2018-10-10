@@ -1,15 +1,24 @@
+###
+## Production_only and end_production_only are used to properly generate docker-compose.yml file.
+###
+
+
 version: "3"
 
+## production_only
 networks:
   proxy-tier:
     external:
       name: caddy-proxy
   default:
     driver: bridge
+## end_production_only
 
 services:
+  #§ data.config.sql.docker.services.db.name + ':'
   wise_sql_db:
     image: postgres:10-alpine
+    #§ 'container_name: ' + data.config.sql.docker.services.db.container
     container_name: wise_sql_db
     expose: # expose exposes ports only inside this stack and do not publish them to host machine.
       - "5432"
@@ -20,47 +29,53 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - "./sql:/docker-entrypoint-initdb.d:ro"
-      - "pgdata:/var/lib/postgresql/data"
-  
-#  adminer: # for debugging
-#    image: adminer
-#    restart: always
-#    ports:
-#      - 3002:3002
+      - "pgdata:/var/lib/postgresql/data" #§< '- "' + data.config.sql.docker.volumes.db.name + ':/var/lib/postgresql/data"'
 
+  #§ data.config.sql.docker.services.pusher.name + ':'
   wise_sql_pusher:
     build: ./pusher
-    command: ./wait-for wise_sql_db:5432 -- npm start
+    image: wise/sql-pusher #§< 'image: ' + data.config.sql.docker.services.pusher.image
+    container_name: wise-sql-pusher #§< 'container_name: ' + data.config.sql.docker.services.pusher.container
+    command: ./wait-for wise_sql_db:5432 -- npm start #§< 'command: ./wait-for ' + data.config.sql.docker.services.db.name + ':5432 -- npm start'
     depends_on:
-      - "wise_sql_db"
+      - "wise_sql_db" #§< '- "' + data.config.sql.docker.services.db.name + '"'
     networks:
       - default
     environment:
+      #§ 'DATABASE_URL: postgres://pusher:pusher@' + data.config.sql.docker.services.db.name + ':5432/app_db'
       DATABASE_URL: postgres://pusher:pusher@wise_sql_db:5432/app_db
       #§ "STEEM_API_URL: \"" + data.config.steem.apis.filter(api => api.get_block === true).map(api => api.url).join(",") + "\""
       STEEM_API_URL: "https://api.steemit.com,https://steemd.minnowsupportproject.org,https://rpc.buildteam.io,https://rpc.steemliberator.com,https://steemd.privex.io"
       # START_BLOCK_NUM: 25021220 # interesting moment for testing
       LOG_LEVEL: info
 
+  #§ data.config.sql.docker.services.postgrest.name + ':'
   postgrest:
     image: postgrest/postgrest
+    #§ 'container_name: ' + data.config.sql.docker.services.postgrest.container
+    container_name: wise-sql-postgrest
     command: bash -c "echo \"Waiting 12s...\" && sleep 12 && echo \"Starting postgrest\" && exec postgrest /etc/postgrest.conf"
     expose:
       - 3000
     depends_on:
+      #§ '- "' + data.config.sql.docker.services.db.name + '"'
       - "wise_sql_db"
+      #§ '- "' + data.config.sql.docker.services.pusher.name + '"'
       - "wise_sql_pusher"
     networks:
+      ## production_only
       - proxy-tier
+      ## end_production_only
       - default
     environment:
-      # https://github.com/PostgREST/postgrest/blob/f6c1ff810e92321f2cd522058d5c6fd74cb64226/docker/postgrest.conf
       #§ "PGRST_SERVER_PROXY_URI: " + data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host + "/"
       PGRST_SERVER_PROXY_URI: https://sql.wise.vote/
+      #§ 'PGRST_DB_URI: postgres://postgrest:postgrest@' + data.config.sql.docker.services.db.name + ':5432/app_db'
       PGRST_DB_URI: postgres://postgrest:postgrest@wise_sql_db:5432/app_db
       PGRST_DB_SCHEMA: api
       PGRST_DB_ANON_ROLE: postgrest_anon
       PGRST_MAX_ROWS: 1000
+      ## production_only
       #§ "VIRTUAL_HOST: \"" + data.config.sql.endpoint.host + "\""
       VIRTUAL_HOST: "sql.wise.vote"
       VIRTUAL_NETWORK: "caddy-proxy"
@@ -68,6 +83,7 @@ services:
       #§ 'CADDY_TLS: ' + ( data.config.sql.endpoint.schema === "https" ? '"yes"' : '"no"')
       CADDY_TLS: "yes"
       CADDY_TIMEOUTS: "read 5m, write 2m"
+      ## end_production_only
     volumes:
       - "./postgrest:/postgrest_service:ro"
 

@@ -54,6 +54,7 @@ export const data = {
       "author": "The Wise Team (https://wise-team.io/)",
     },
     "docker": {
+      "imageHostname": "wise",
       "labels": {
         "domain": "vote.wise",
         "defaultLabels": [ () => ".wise-version=\"1.2.2\"", () => ".license=\"MIT\"", () => ".repository=\"steem-wise-sql\"" ],
@@ -138,6 +139,28 @@ export const data = {
       "endpoint": {
         "host": "sql.wise.vote",
         "schema": "https",
+      },
+      "docker": {
+        "services": {
+          "db": {
+            "name": "wise_sql_db",
+            "container": "wise_sql_db",
+          },
+          "pusher": {
+            "name": "wise_sql_pusher",
+            "container": "wise-sql-pusher",
+            "image": "wise/sql-pusher",
+          },
+          "postgrest": {
+            "name": "postgrest",
+            "container": "wise-sql-postgrest",
+          },
+        },
+        "volumes": {
+          "db": {
+            "name": "pgdata",
+          },
+        },
       },
     },
     "manual": {
