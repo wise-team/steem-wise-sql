@@ -4,7 +4,7 @@
   "description": "Steem WISE sql pusher",
   "main": "dist/index.js",
   "engines": {
-    "node": ">=9.11"
+    "node": ">=10.12"
   },
   "scripts": {
     "build": "rm -rf dist && tsc && npm run tslint",

@@ -49,7 +49,7 @@ export const data = {
     },
     "npm": {
       "node": {
-        "version": "9.11",
+        "version": "10.12",
       },
       "keywords": [ "steem", "blockchain", "wise" ],
       "author": "The Wise Team (https://wise-team.io/)",
