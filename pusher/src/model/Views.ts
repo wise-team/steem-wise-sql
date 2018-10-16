@@ -115,7 +115,7 @@ export class Views {
             AS $$
                 SELECT DISTINCT ON (delegator, voter) * FROM api.operations
                 WHERE operation_type='set_rules' AND voter = $1 AND moment <= $2
-                ORDER BY delegator ASC, voter ASC, moment DESC LIMIT 1
+                ORDER BY delegator ASC, voter ASC, moment DESC
             $$ LANGUAGE SQL STABLE STRICT;
         `);
     }
