@@ -68,5 +68,32 @@ export class Views {
             ;
         `);
         await sequelize.query("GRANT SELECT ON api.stats TO postgrest_anon;");
+
+        await sequelize.query(`CREATE OR REPLACE VIEW api.rulesets AS
+            SELECT DISTINCT ON (delegator, voter) * FROM api.operations
+            WHERE operation_type='set_rules'
+            ORDER BY delegator ASC, voter ASC, moment DESC
+            ;
+        `);
+        await sequelize.query("GRANT SELECT ON api.rulesets TO postgrest_anon;");
+
+        /*await sequelize.query(`CREATE OR REPLACE FUNCTION api.rulesets_for_voter_at_moment (voter varchar(40), moment numeric(14, 4)) RETURNS TABLE (
+            block_num integer,
+            transaction_num smallint,
+            transaction_id  varchar(40),
+            timestamp       timestamp,
+            moment          numeric(14,4),
+            voter           varchar(16),
+            delegator       varchar(16),
+            operation_type  api.enum_operations_operation_type,
+            json_str        text
+        )
+        AS $$
+        //SELECT DISTINCT ON (delegator, voter) * FROM api.operations
+        //    WHERE operation_type='set_rules'
+        //    ORDER BY delegator ASC, voter ASC, moment DESC
+
+        $$ LANGUAGE SQL STABLE STRICT;
+        `);*/
     }
 }
