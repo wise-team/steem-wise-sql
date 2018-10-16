@@ -11,7 +11,7 @@ COMMENT ON SCHEMA api IS $$
 <h1 style="background: #6b11ff; color: white; padding: 0.5em;">Steem WISE SQL api</h1>
 
 Steem WISE SQL is a database with all WISE operations, synced with blockchain.
-
+-- #§ 'More info & source: [https://github.com/' + d(data.config.repository.github.organization) + '/' + d(data.repository.name) + '](https://github.com' + d(data.config.repository.github.organization) + '/' + d(data.repository.name) + ')'
 More info & source: [https://github.com/wise-team/steem-wise-sql](https://github.com/wise-team/steem-wise-sql)
 $$;
 
