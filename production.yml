@@ -64,9 +64,6 @@ services:
       #§ '- "' + data.config.sql.docker.services.pusher.name + '"'
       - "wise_sql_pusher"
     networks:
-      ## production_only
-      - proxy-tier
-      ## end_production_only
       - default
     environment:
       #§ "PGRST_SERVER_PROXY_URI: " + data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host + "/"
@@ -76,33 +73,35 @@ services:
       PGRST_DB_SCHEMA: api
       PGRST_DB_ANON_ROLE: postgrest_anon
       PGRST_MAX_ROWS: 1000
-      ## production_only
-      #§ "VIRTUAL_HOST: \"" + data.config.sql.endpoint.host + "\""
-      VIRTUAL_HOST: "sql.wise.vote"
-      VIRTUAL_NETWORK: "caddy-proxy"
-      VIRTUAL_PORT: 3000
-      #§ 'CADDY_TLS: ' + ( data.config.sql.endpoint.schema === "https" ? '"yes"' : '"no"')
-      CADDY_TLS: "yes"
-      CADDY_TIMEOUTS: "read 5m, write 2m"
-      ## end_production_only
     volumes:
       - "./postgrest:/postgrest_service:ro"
 
-  #wise_sql_swagger_host:
-  #  image: nginx
-  #  volumes:
-  #    - ./api_specification:/usr/share/nginx/html:ro
-  #  networks:
-  #    - proxy-tier
-  #  environment:
-  ##§ "#    VIRTUAL_HOST: \"" + data.config.sql.endpoint.host + "\""
-  #    VIRTUAL_HOST: "sql.wise.vote"
-  #    VIRTUAL_NETWORK: "caddy-proxy"
-  #    VIRTUAL_PORT: 80
-  #§ '#    CADDY_TLS: ' + ( data.config.sql.endpoint.schema === "https" ? '"yes"' : '"no"')
-  #    CADDY_TLS: "yes"
-  #    CADDY_TIMEOUTS: "read 5m, write 2m"
-  #  restart: always
+  #§ data.config.sql.docker.services.api_proxy.name + ':'
+  wise_sql_api_proxy:
+    image: nginx
+    #§ 'container_name: ' + data.config.sql.docker.services.api_proxy.container
+    container_name: wise_sql_api_proxy
+    command: bash -c "sleep 15 && exec nginx -g 'daemon off;'"
+    expose:
+      - 8080
+    networks:
+      ## production_only
+      - proxy-tier
+      ## end_production_only
+      - default
+    volumes:
+      - ./api_proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+    
+    ## production_only
+    environment:
+      #§ "VIRTUAL_HOST: \"" + data.config.sql.endpoint.host + "\""
+      VIRTUAL_HOST: "sql.wise.vote"
+      VIRTUAL_NETWORK: "caddy-proxy"
+      VIRTUAL_PORT: 8080
+      #§ 'CADDY_TLS: ' + ( data.config.sql.endpoint.schema === "https" ? '"yes"' : '"no"')
+      CADDY_TLS: "yes"
+      CADDY_TIMEOUTS: "read 5m, write 2m"
+    ## end_production_only
 
 volumes:
   pgdata: # steem-wise-sql_pgdata

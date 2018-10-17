@@ -133,6 +133,9 @@ export const data = {
       },
     },
     "sql": {
+      "protocol": {
+        "version": "1.0",
+      },
       "pusher": {
         "requestConcurrencyPerNode": 3,
         "blockProcessingTimeoutMs": 9000,
@@ -155,6 +158,10 @@ export const data = {
           "postgrest": {
             "name": "postgrest",
             "container": "wise-sql-postgrest",
+          },
+          "api_proxy": {
+            "name": "wise_sql_api_proxy",
+            "container": "wise_sql_api_proxy",
           },
         },
         "volumes": {

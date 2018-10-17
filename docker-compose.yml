@@ -72,21 +72,19 @@ services:
     volumes:
       - "./postgrest:/postgrest_service:ro"
 
-  #wise_sql_swagger_host:
-  #  image: nginx
-  #  volumes:
-  #    - ./api_specification:/usr/share/nginx/html:ro
-  #  networks:
-  #    - proxy-tier
-  #  environment:
-  ##_embedded_template_disabled_ "#    VIRTUAL_HOST: \"" + data.config.sql.endpoint.host + "\""
-  #    VIRTUAL_HOST: "sql.wise.vote"
-  #    VIRTUAL_NETWORK: "caddy-proxy"
-  #    VIRTUAL_PORT: 80
-  #_embedded_template_disabled_ '#    CADDY_TLS: ' + ( data.config.sql.endpoint.schema === "https" ? '"yes"' : '"no"')
-  #    CADDY_TLS: "yes"
-  #    CADDY_TIMEOUTS: "read 5m, write 2m"
-  #  restart: always
+  #_embedded_template_disabled_ data.config.sql.docker.services.api_proxy.name + ':'
+  wise_sql_api_proxy:
+    image: nginx
+    #_embedded_template_disabled_ 'container_name: ' + data.config.sql.docker.services.api_proxy.container
+    container_name: wise_sql_api_proxy
+    command: bash -c "sleep 15 && exec nginx -g 'daemon off;'"
+    ports:
+      - 8080:8080
+    networks:
+      - default
+    volumes:
+      - ./api_proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+
 
 volumes:
   pgdata: # steem-wise-sql_pgdata
