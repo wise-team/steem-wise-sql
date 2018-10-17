@@ -10,9 +10,11 @@ It consists of four services:
 - **postgres**: database
 - **postgrest**: REST api for reading from database
 - **pusher**: synchronizes database with the blockchain
-- **api_specification**: hosts swagger specification
+- **api_proxy**: hosts swagger specification at /doc and adds version header to response
 
-
+<!--§ "\n# Swagger docs at [" + data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host + "/doc](" + data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host + "/doc) :bulb:\n" §-->
+# Swagger docs at [https://sql.wise.vote/doc](https://sql.wise.vote/doc) :bulb:
+<!--§ §.-->
 
 ## Try and use our API online
 
@@ -28,7 +30,8 @@ Let's assume that api host is <!--§ "[" + data.config.sql.endpoint.schema + ":/
 
 <!--§ value.replace(/https?:\/\/[^\/]+\//gmui, d(data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host) + "/") §-->
 ```sql
--https://sql.wise.vote/                   —- openAPI specification
+https://sql.wise.vote/doc                -- swagger docs
+https://sql.wise.vote/                   —- openAPI specification
 https://sql.wise.vote/operations         -- list all operations
 https://sql.wise.vote/properties         -- list all properties
 https://sql.wise.vote/rulesets           -- list all rulesets
