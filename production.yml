@@ -91,6 +91,7 @@ services:
       - default
     volumes:
       - ./api_proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./api_proxy/html/:/usr/share/nginx/html/:ro
     
     ## production_only
     environment:
