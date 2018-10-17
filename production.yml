@@ -24,6 +24,7 @@ services:
       - "5432"
     networks:
       - default
+    restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
