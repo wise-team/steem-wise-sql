@@ -6,15 +6,15 @@
 
 A database with all WISE operations, synced with blockchain.
 
+<!--§ "\n# Swagger docs at [" + data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host + "/doc](" + data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host + "/doc) :bulb:\n" §-->
+# Swagger docs at [https://sql.wise.vote/doc](https://sql.wise.vote/doc) :bulb:
+<!--§ §.-->
+
 It consists of four services: 
 - **postgres**: database
 - **postgrest**: REST api for reading from database
 - **pusher**: synchronizes database with the blockchain
 - **api_proxy**: hosts swagger specification at /doc and adds version header to response
-
-<!--§ "\n# Swagger docs at [" + data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host + "/doc](" + data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host + "/doc) :bulb:\n" §-->
-# Swagger docs at [https://sql.wise.vote/doc](https://sql.wise.vote/doc) :bulb:
-<!--§ §.-->
 
 ## Try and use our API online
 
