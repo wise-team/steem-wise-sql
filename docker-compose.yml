@@ -79,7 +79,7 @@ services:
     container_name: wise_sql_api_proxy
     command: bash -c "sleep 15 && exec nginx -g 'daemon off;'"
     expose:
-      - 8080
+      - 80
     networks:
       - default
     volumes:
