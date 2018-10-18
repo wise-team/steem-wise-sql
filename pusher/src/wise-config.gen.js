@@ -135,6 +135,7 @@ export const data = {
     "sql": {
       "protocol": {
         "version": "1.0",
+        "maxRowsPerPage": 1000,
       },
       "pusher": {
         "requestConcurrencyPerNode": 3,
@@ -277,10 +278,10 @@ export const data = {
         "icon": "https://wise.vote/assets/wise-full-color-icon-128.png",
         "website": "https://wise.vote/",
         "beneficiaries": null,
-        "is_public": false,
+        "is_public": true,
         "is_disabled": false,
         "created_at": "2018-07-06T09:53:05.827Z",
-        "updated_at": "2018-09-21T13:20:47.021Z",
+        "updated_at": "2018-10-16T15:00:15.365Z",
       },
     },
   },
