@@ -1,23 +1,23 @@
 import * as Bluebird  from "bluebird";
 import * as steem from "steem";
-import { EffectuatedWiseOperation } from "steem-wise-core";
+import { EffectuatedWiseOperation, SetRules, SendVoteorder, ConfirmVote } from "steem-wise-core";
 import { Block } from "./blockchain-operations-types";
 import { Database } from "./model/Database";
 import { StaticConfig } from "./StaticConfig";
-import { Log } from "./log"; const log = Log.getLogger();
+import { Log } from "./log";
 import { WiseOperation } from "./model/WiseOperationModel";
-import { SetRules } from "../node_modules/steem-wise-core/dist/protocol/SetRules";
-import { SendVoteorder } from "../node_modules/steem-wise-core/dist/protocol/SendVoteorder";
-import { ConfirmVote } from "../node_modules/steem-wise-core/dist/protocol/ConfirmVote";
 import { BufferedBlockLoader } from "./BufferedBlockLoader";
 import { Util } from "./util/util";
 
 export class Pusher {
+    private steem: steem.api.Steem;
     private timeoutMs: number = StaticConfig.TIMEOUT_MS;
     private database: Database;
     private blockLoader: BufferedBlockLoader;
+    private bufferingOn: boolean = true;
 
-    public constructor(database: Database, blockLoader: BufferedBlockLoader) {
+    public constructor(steem: steem.api.Steem, database: Database, blockLoader: BufferedBlockLoader) {
+        this.steem = steem;
         this.database = database;
         this.blockLoader = blockLoader;
     }
@@ -27,16 +27,16 @@ export class Pusher {
         if (nextBlock) nextBlock++;
         else nextBlock = StaticConfig.START_BLOCK_NUM;
 
-        log.info("Streaming packages from STEEM blockchain, starting at block " + nextBlock);
+        Log.log().info("Streaming packages from STEEM blockchain, starting at block " + nextBlock);
         await this.loadBlockLoop(nextBlock);
 
     }
 
     private async loadBlockLoop(blockNum: number): Promise<void> {
-        log.debug("Begin processing block " + blockNum);
+        Log.log().debug("Begin processing block " + blockNum);
         try {
             return Bluebird.resolve()
-            .then(() => this.blockLoader.loadBlock(blockNum))
+            .then(() => this.blockLoader.loadBlock(blockNum, this.bufferingOn))
             .then((ops: EffectuatedWiseOperation []) => this.pushOperations(ops))
             .timeout(this.timeoutMs, new Error("Timeout (> " + this.timeoutMs + "ms while processing operations)"))
             // when timeout occurs an error is thrown. It is then catched few lines below
@@ -44,26 +44,26 @@ export class Pusher {
             .then(() => this.database.setProperty("last_processed_block", blockNum + ""))
             .then(() => {
                 if (blockNum % 50 == 0) { // print timestamp every 50 blocks
-                    return steem.api.getBlockAsync(blockNum).then(
+                    return this.steem.getBlockAsync(blockNum).then(
                         /* got block */ (block: Block) => {
-                            log.info("Finished processing block " + blockNum + " (block " + block.block_id + " timestamp " + block.timestamp + "Z)");
-                            this.pushLagInfo(block);
+                            Log.log().info("Finished processing block " + blockNum + " (block " + block.block_id + " timestamp " + block.timestamp + "Z)");
+                            this.processLag(block);
                         },
-                        /*error getting block: */ () => log.info("Finished processing block " + blockNum + " (could not load block timestamp)")
+                        /*error getting block: */ () => Log.log().info("Finished processing block " + blockNum + " (could not load block timestamp)")
                     );
                 }
-                else if (blockNum % 10 == 0) log.info("Finished processing block " + blockNum);
-                else log.debug("Finished processing block " + blockNum);
+                else if (blockNum % 10 == 0) Log.log().info("Finished processing block " + blockNum);
+                else Log.log().debug("Finished processing block " + blockNum);
             })
             .then(() => {
                 return this.loadBlockLoop(blockNum + 1);
             }, (error: Error) => {
-                log.error(" Reversible error (b=" + blockNum + "): " + error.message + ". Retrying in 1.5 seconds...");
+                Log.log().error(" Reversible error (b=" + blockNum + "): " + error.message + ". Retrying in 1.5 seconds...");
                 setTimeout(() => this.loadBlockLoop(blockNum), 1500);
             });
         }
         catch (error) {
-            log.error("WARNING! Reversible error catched outside of promise (b=" + blockNum + "): " + error.message + ". Retrying in 1.5 seconds...");
+            Log.log().error("WARNING! Reversible error catched outside of promise (b=" + blockNum + "): " + error.message + ". Retrying in 1.5 seconds...");
             setTimeout(() => this.loadBlockLoop(blockNum), 1500);
         }
     }
@@ -97,7 +97,7 @@ export class Pusher {
         if (opsToPush.length > 0) return this.database.pushWiseOperations(opsToPush);
     }
 
-    private async pushLagInfo(block: Block) {
+    private async processLag(block: Block) {
         const blockTime = new Date(block.timestamp + "Z" /* process as UTC/GMT time zone*/);
         const currentTime = new Date();
         let lagS = Math.floor((currentTime.getTime() - blockTime.getTime()) / 1000);
@@ -107,8 +107,19 @@ export class Pusher {
         await this.database.setProperty("lag_description",  "Lag field shows a delay between "
             + "current timestamp and the timestamp of last processed block in seconds.");
 
-        if (lagS > 6) {
-            log.info("Current lag is " + lagS + "s.");
+        if (lagS > 200) {
+            Log.log().info("Current lag is " + lagS + "s (> 200s). Turning preloading on.");
+            this.bufferingOn = true;
+            await this.database.setProperty("buffering", "true");
         }
+        else {
+            this.bufferingOn = false;
+            await this.database.setProperty("buffering", "false");
+        }
+
+        if (lagS > 6) {
+            Log.log().info("Current lag is " + lagS + "s.");
+        }
+
     }
 }

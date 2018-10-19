@@ -1,6 +1,5 @@
 
 import { Log } from "../log";
-const log = Log.getLogger();
 import * as Sequelize from "sequelize";
 import { WiseOperation } from "./WiseOperationModel";
 import { Properties } from "./PropertiesModel";
@@ -14,7 +13,7 @@ export class Database {
 
     public constructor(connectionUrl: string) {
         this.sequelize = new Sequelize(connectionUrl, {
-            logging: log.debug,
+            logging: Log.log().info,
             dialectOptions: {
                 multipleStatements: true
             }
@@ -40,7 +39,7 @@ export class Database {
     }
 
     public async pushWiseOperations(operations: WiseOperation.Attributes []) {
-        log.info("Pushing " + JSON.stringify(operations, undefined, 2));
+        Log.log().info("Pushing " + JSON.stringify(operations, undefined, 2));
         return this.wiseOperationsModel.bulkCreate(operations);
     }
 
@@ -59,7 +58,7 @@ export class Database {
     }
 
     public async setProperty(key: string, value: string): Promise<boolean> {
-        Log.cheapDebug(() => "setProperty(key=" + key + ", value=" + value + ")");
+        Log.log().cheapDebug(() => "setProperty(key=" + key + ", value=" + value + ")");
         const prop: Properties.Attributes = { key: key, value: value };
         return this.propertiesModel.insertOrUpdate(prop);
     }

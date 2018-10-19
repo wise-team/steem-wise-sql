@@ -1,3 +1,5 @@
+import * as steem from "steem";
+
 export interface Block {
     block_id: string;
     previous: string;
@@ -9,7 +11,7 @@ export interface Block {
 export interface Transaction {
     ref_block_num: number;
     transaction_id: string;
-    operations: [string, object] [];
+    operations: steem.OperationWithDescriptor [];
     [x: string]: any; // allows other properties
 }
 
@@ -19,7 +21,7 @@ export interface Operation {
     transaction_id: string;
     operation_num: number;
     timestamp: Date;
-    op: [string, object];
+    op: steem.OperationWithDescriptor;
 }
 
 export type CustomJsonOperation = {
