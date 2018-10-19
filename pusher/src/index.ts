@@ -27,7 +27,7 @@ const steemApiUrls = (process.env.STEEM_API_URL || "https://api.steemit.com").sp
 
 const apis: DirectBlockchainApi [] = steemApiUrls.map(url => {
     const steemOptions: steem.SteemJsOptions = { url: url };
-    return new DirectBlockchainApi(Wise.constructDefaultProtocol(), "", steemOptions);
+    return new DirectBlockchainApi("", steemOptions);
 });
 
 
