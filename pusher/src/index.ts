@@ -48,7 +48,7 @@ async function startApp() {
         return pusher.startLoop();
     }
     catch (error) {
-        Log.log().error(error);
+        Log.log().exception(Log.level.error, error);
         Log.log().error("Error in main loop. Exitting");
         process.exit(1);
     }

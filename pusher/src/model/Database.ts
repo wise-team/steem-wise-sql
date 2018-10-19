@@ -13,7 +13,7 @@ export class Database {
 
     public constructor(connectionUrl: string) {
         this.sequelize = new Sequelize(connectionUrl, {
-            logging: Log.log().info,
+            logging: (msg: string) => Log.log().silly(msg),
             dialectOptions: {
                 multipleStatements: true
             }
