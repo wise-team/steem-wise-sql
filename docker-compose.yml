@@ -78,8 +78,8 @@ services:
     #_embedded_template_disabled_ 'container_name: ' + data.config.sql.docker.services.api_proxy.container
     container_name: wise_sql_api_proxy
     command: bash -c "sleep 15 && exec nginx -g 'daemon off;'"
-    expose:
-      - 80
+    ports:
+      - 8080:80
     networks:
       - default
     volumes:
