@@ -10,7 +10,7 @@ export const data = {
       "code": "MIT",
     },
     "wise": {
-      "version": "2.2.1",
+      "version": "2.2.2",
       "homepage": "https://wise.vote/",
     },
     "steem": {
@@ -56,9 +56,9 @@ export const data = {
       "maintainer": "The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>",
       "labels": {
         "domain": "vote.wise",
-        "defaultLabels": [ () => "maintainer=\"The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>\"", () => "vote.wise.wise-version=\"2.2.1\"", () => "vote.wise.license=\"MIT\"", () => "vote.wise.repository=\"steem-wise-sql\"" ],
+        "defaultLabels": [ () => "maintainer=\"The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>\"", () => "vote.wise.wise-version=\"2.2.2\"", () => "vote.wise.license=\"MIT\"", () => "vote.wise.repository=\"steem-wise-sql\"" ],
       },
-      "generateDockerfileFrontMatter": () => "LABEL maintainer=\"The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>\"\nLABEL vote.wise.wise-version=\"2.2.1\"\nLABEL vote.wise.license=\"MIT\"\nLABEL vote.wise.repository=\"steem-wise-sql\"",
+      "generateDockerfileFrontMatter": () => "LABEL maintainer=\"The Wise Team (https://wise-team.io/) <jedrzejblew@gmail.com>\"\nLABEL vote.wise.wise-version=\"2.2.2\"\nLABEL vote.wise.license=\"MIT\"\nLABEL vote.wise.repository=\"steem-wise-sql\"",
     },
     "repository": {
       "github": {
@@ -203,6 +203,18 @@ export const data = {
       "healthcheck": {
         "metrics": {
           "periodMs": 259200000,
+        },
+        "hostedLogs": {
+          "host": "test.wise.vote",
+          "tls": "yes",
+        },
+        "docker": {
+          "services": {
+            "hostedLogs": {
+              "name": "wise_healthcheck_hosted_logs",
+              "container": "wise_healthcheck_hosted_logs",
+            },
+          },
         },
         "inBrowserTests": {
           "enabled": false,
