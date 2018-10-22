@@ -98,7 +98,7 @@ services:
       #§ "VIRTUAL_HOST: \"" + data.config.sql.endpoint.host + "\""
       VIRTUAL_HOST: "sql.wise.vote"
       VIRTUAL_NETWORK: "caddy-proxy"
-      VIRTUAL_PORT: 1080
+      VIRTUAL_PORT: 80
       #§ 'CADDY_TLS: ' + ( data.config.sql.endpoint.schema === "https" ? '"yes"' : '"no"')
       CADDY_TLS: "yes"
       CADDY_TIMEOUTS: "read 5m, write 2m"
