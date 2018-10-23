@@ -24,13 +24,13 @@ services:
       - "5432"
     networks:
       - default
-    restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
       - "./sql:/docker-entrypoint-initdb.d:ro"
       - "pgdata:/var/lib/postgresql/data" #§< '- "' + data.config.sql.docker.volumes.db.name + ':/var/lib/postgresql/data"'
+    restart: always
 
   #§ data.config.sql.docker.services.pusher.name + ':'
   wise_sql_pusher:
@@ -49,6 +49,7 @@ services:
       STEEM_API_URL: "https://api.steemit.com,https://steemd.minnowsupportproject.org,https://rpc.buildteam.io,https://rpc.steemliberator.com"
       # START_BLOCK_NUM: 25021220 # interesting moment for testing
       WISE_LOG_LEVEL: info
+    restart: always
 
   #§ data.config.sql.docker.services.postgrest.name + ':'
   postgrest:
@@ -75,6 +76,7 @@ services:
       PGRST_MAX_ROWS: 1000 #§< 'PGRST_MAX_ROWS: ' + d(data.config.sql.protocol.maxRowsPerPage)
     volumes:
       - "./postgrest:/postgrest_service:ro"
+    restart: always
 
   #§ data.config.sql.docker.services.api_proxy.name + ':'
   wise_sql_api_proxy:
@@ -92,7 +94,6 @@ services:
     volumes:
       - ./api_proxy/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./api_proxy/html/:/usr/share/nginx/html/:ro
-    
     ## production_only
     environment:
       #§ "VIRTUAL_HOST: \"" + data.config.sql.endpoint.host + "\""
@@ -103,6 +104,7 @@ services:
       CADDY_TLS: "yes"
       CADDY_TIMEOUTS: "read 5m, write 2m"
     ## end_production_only
+    restart: always
 
 volumes:
   pgdata: # steem-wise-sql_pgdata
