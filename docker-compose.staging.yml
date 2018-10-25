@@ -1,0 +1,41 @@
+version: "3"
+
+networks:
+  proxy-tier:
+    external:
+      name: caddy-proxy
+  default:
+    driver: bridge
+
+services:
+  #§ data.config.sql.docker.services.db.name + ':'
+  wise_sql_db:
+    restart: always
+
+  #§ data.config.sql.docker.services.pusher.name + ':'
+  wise_sql_pusher:
+    restart: always
+
+  #§ data.config.sql.docker.services.postgrest.name + ':'
+  postgrest:
+    environment:
+      #§ "PGRST_SERVER_PROXY_URI: " + data.config.sql.url.staging
+      PGRST_SERVER_PROXY_URI: http://sql.dev.wise.vote/
+    restart: always
+
+  #§ data.config.sql.docker.services.api_proxy.name + ':'
+  wise_sql_api_proxy:
+    ports:
+      - 1080:80
+    networks:
+      - proxy-tier
+      - default
+    environment:
+      #§ "VIRTUAL_HOST: \"" + url(data.config.sql.url.staging).hostname + "\""
+      VIRTUAL_HOST: "sql.dev.wise.vote"
+      VIRTUAL_NETWORK: "caddy-proxy"
+      VIRTUAL_PORT: 80
+      #§ 'CADDY_TLS: ' + ( url(data.config.sql.url.staging).protocol === "https:" ? '"yes"' : '"no"')
+      CADDY_TLS: "no"
+      CADDY_TIMEOUTS: "read 5m, write 2m"
+    restart: always

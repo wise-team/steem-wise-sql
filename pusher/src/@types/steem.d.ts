@@ -79,7 +79,7 @@ declare module 'steem' {
         voting_power: number;
         withdraw_routes: number;
         withdrawn: number;
-        witness_votes: number;
+        witness_votes: string [];
         witnesses_voted_for: number;
         [x: string]: any; // allows other properties
     }
@@ -350,12 +350,12 @@ declare module 'steem' {
             getCommentDiscussionsByPayoutWithAsync: any;*/
 
             // getConfig: any;
-            getConfigAsync(): Promise<{ [s: string]: string; }>;
+            public getConfigAsync(): Promise<{ [s: string]: string; }>;
             // getConfigWith: any;
             // getConfigWithAsync: any;
 
             // getContent: any;
-            getContentAsync(author: string, permlink: string): SteemPost;
+            public getContentAsync(author: string, permlink: string): SteemPost;
             // getContentWith: any;
             // getContentWithAsync: any;
 
@@ -429,7 +429,7 @@ declare module 'steem' {
             getDiscussionsByVotesWithAsync: any;*/
 
             // getDynamicGlobalProperties: any;
-            getDynamicGlobalPropertiesAsync(): Promise<DynamicGlobalProperties>;
+            public getDynamicGlobalPropertiesAsync(): Promise<DynamicGlobalProperties>;
             // getDynamicGlobalPropertiesWith: any;
             // getDynamicGlobalPropertiesWithAsync: any;
 
@@ -460,12 +460,14 @@ declare module 'steem' {
             getFollowing: any;
             getFollowingAsync: any;
             getFollowingWith: any;
-            getFollowingWithAsync: any;
-            getHardforkVersion: any;
-            getHardforkVersionAsync: any;
-            getHardforkVersionWith: any;
-            getHardforkVersionWithAsync: any;
-            getKeyReferences: any;
+            getFollowingWithAsync: any;*/
+            
+            // getHardforkVersion: any;
+            public getHardforkVersionAsync(): Promise<string>;
+            // getHardforkVersionWith: any;
+            // getHardforkVersionWithAsync: any;
+            
+            /*getKeyReferences: any;
             getKeyReferencesAsync: any;
             getKeyReferencesWith: any;
             getKeyReferencesWithAsync: any;
@@ -585,12 +587,14 @@ declare module 'steem' {
             getTrendingTags: any;
             getTrendingTagsAsync: any;
             getTrendingTagsWith: any;
-            getTrendingTagsWithAsync: any;
-            getVersion: any;
-            getVersionAsync: any;
-            getVersionWith: any;
-            getVersionWithAsync: any;
-            getVestingDelegations: any;
+            getTrendingTagsWithAsync: any;*/
+
+            // getVersion: any;
+            public getVersionAsync(): Promise<{ blockchain_version: string; [x: string]: any; }>;
+            // getVersionWith: any;
+            // getVersionWithAsync: any;
+            
+            /*getVestingDelegations: any;
             getVestingDelegationsAsync: any;
             getVestingDelegationsWith: any;
             getVestingDelegationsWithAsync: any;
@@ -628,12 +632,14 @@ declare module 'steem' {
             login: any;
             loginAsync: any;
             loginWith: any;
-            loginWithAsync: any;
-            lookupAccountNames: any;
-            lookupAccountNamesAsync: any;
-            lookupAccountNamesWith: any;
-            lookupAccountNamesWithAsync: any;
-            lookupAccounts: any;
+            loginWithAsync: any;*/
+
+            // lookupAccountNames: any;
+            public lookupAccountNamesAsync(accountNames: string []): Promise<any []>; // TODO what is the type?;
+            // lookupAccountNamesWith: any;
+            // lookupAccountNamesWithAsync: any;
+
+            /*lookupAccounts: any;
             lookupAccountsAsync: any;
             lookupAccountsWith: any;
             lookupAccountsWithAsync: any;

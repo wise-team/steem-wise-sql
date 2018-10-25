@@ -1,14 +1,13 @@
 # Steem WISE SQL
 
 <!--§ data.config.repository.readme.generateDefaultBadges(data) §-->
-[![License](https://img.shields.io/github/license/wise-team/steem-wise-sql.svg?style=flat-square)](https://github.com/wise-team/steem-wise-sql/blob/master/LICENSE) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) [![Chat](https://img.shields.io/badge/chat%20on%20discord-6b11ff.svg?style=flat-square)](https://discordapp.com/invite/CwxQDbG) [![Wise operations count](https://img.shields.io/badge/dynamic/json.svg?label=wise%20operations%20count&url=https%3A%2F%2Fsql.wise.vote%3A%2Foperations%3Fselect%3Dcount&query=%24%5B0%5D.count&colorB=blue&style=flat-square)](https://sql.wise.vote/operations?select=moment,delegator,voter,operation_type&order=moment.desc)
+[![License](https://img.shields.io/github/license/wise-team/steem-wise-sql.svg?style=flat-square)](https://github.com/wise-team/steem-wise-sql/blob/master/LICENSE) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) [![Chat](https://img.shields.io/badge/chat%20on%20discord-6b11ff.svg?style=flat-square)](https://discordapp.com/invite/CwxQDbG) [![Wise operations count](https://img.shields.io/badge/dynamic/json.svg?label=wise%20operations%20count&url=https%3A%2F%2Fsql.wise.vote%2Foperations%3Fselect%3Dcount&query=%24%5B0%5D.count&colorB=blue&style=flat-square)](https://sql.wise.vote/operations?select=moment,delegator,voter,operation_type&order=moment.desc)
 <!--§§.-->
 
 A database with all WISE operations, synced with blockchain.
-
-<!--§ "\n# Swagger docs at [" + data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host + "/doc](" + data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host + "/doc) :bulb:\n" §-->
+<!--§ const url = d(data.config.sql.url.production) + "doc"; '\n# Swagger docs at [' + url + '](' + url + ') :bulb:\n' §-->
 # Swagger docs at [https://sql.wise.vote/doc](https://sql.wise.vote/doc) :bulb:
-<!--§ §.-->
+<!--§§.-->
 
 It consists of four services: 
 - **postgres**: database
@@ -18,7 +17,7 @@ It consists of four services:
 
 ## Try and use our API online
 
-I have launched a temporary version of steem-wise-sql at **<!--§ "[" + data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host + "](" + data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host + ")" §-->[https://sql.wise.vote](https://sql.wise.vote)<!--§§.-->**. Feel free to use and try it, but beware that it was just launched and the synchronization may not have been finished yet.
+I have launched a temporary version of steem-wise-sql at **<!--§ const url = d(data.config.sql.url.production); '[' + url + '](' + url + ')' §-->[https://sql.wise.vote/](https://sql.wise.vote/)<!--§ §.-->**. Feel free to use and try it, but beware that it was just launched and the synchronization may not have been finished yet.
 
 
 
@@ -26,12 +25,12 @@ I have launched a temporary version of steem-wise-sql at **<!--§ "[" + data.con
 
 The Api is provided by Postgrest. Detailed instructions on making api calls can be found here: [http://postgrest.org/en/v5.0/api.html](http://postgrest.org/en/v5.0/api.html).
 
-Let's assume that api host is <!--§ "[" + data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host + "](" + data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host + ")" §-->[https://sql.wise.vote](https://sql.wise.vote)<!--§§.-->.
+Let's assume that api host is <!--§ const url = d(data.config.sql.url.production); '[' + url + '](' + url + ')' §-->[https://sql.wise.vote/](https://sql.wise.vote/)<!--§ §.-->.
 
-<!--§ value.replace(/https?:\/\/[^\/]+\//gmui, d(data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host) + "/") §-->
+<!--§ value.replace(/https?:\/\/[^\/]+\//gmui, d(data.config.sql.url.production)) §-->
 ```sql
 https://sql.wise.vote/doc                -- swagger docs
-https://sql.wise.vote/                   —- openAPI specification
+https://sql.wise.vote//                  —- openAPI specification
 https://sql.wise.vote/operations         -- list all operations
 https://sql.wise.vote/properties         -- list all properties
 https://sql.wise.vote/rulesets           -- list all rulesets
@@ -42,7 +41,7 @@ https://sql.wise.vote/operations?select=voter,delegator,moment
 /* in operations table available fields are: id, block_num, transaction_num, transaction_id, 
    timestamp, voter, delegator, operation_type, json_str, moment */
 
---- operators (Full list can be found here: https://sql.wise.vote/en/v5.0/api.html)
+--- operators (Full list can be found here: https:/sql.wise.vote//en/v5.0/api.html)
 https://sql.wise.vote/operations?voter=eq.noisy -- voter == (equals) noisy
 https://sql.wise.vote/operations?moment=lt.23029285.0038 -- moment less than 23029285.0038. Format of moment is block_num.trx_num (trx_num is padded with zeros to four digits)
 https://sql.wise.vote/operations?block_num=gt.22039180 -- block_num greater than 22039180
