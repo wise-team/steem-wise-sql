@@ -1,0 +1,7 @@
+version: "3"
+
+services:
+  #§ data.config.sql.docker.services.api_proxy.name + ':'
+  wise_sql_api_proxy:
+    ports:
+      - 1080:80
