@@ -1,18 +1,4 @@
-###
-## Production_only and end_production_only are used to properly generate docker-compose.yml file.
-###
-
-
 version: "3"
-
-## production_only
-networks:
-  proxy-tier:
-    external:
-      name: caddy-proxy
-  default:
-    driver: bridge
-## end_production_only
 
 services:
   #§ data.config.sql.docker.services.db.name + ':'
@@ -30,7 +16,6 @@ services:
     volumes:
       - "./sql:/docker-entrypoint-initdb.d:ro"
       - "pgdata:/var/lib/postgresql/data" #§< '- "' + data.config.sql.docker.volumes.db.name + ':/var/lib/postgresql/data"'
-    restart: always
 
   #§ data.config.sql.docker.services.pusher.name + ':'
   wise_sql_pusher:
@@ -49,7 +34,6 @@ services:
       STEEM_API_URL: "https://api.steemit.com,https://rpc.buildteam.io"
       # START_BLOCK_NUM: 25021220 # interesting moment for testing
       WISE_LOG_LEVEL: info
-    restart: always
 
   #§ data.config.sql.docker.services.postgrest.name + ':'
   postgrest:
@@ -57,8 +41,6 @@ services:
     #§ 'container_name: ' + data.config.sql.docker.services.postgrest.container
     container_name: wise-sql-postgrest
     command: bash -c "echo \"Waiting 12s...\" && sleep 12 && echo \"Starting postgrest\" && exec postgrest /etc/postgrest.conf"
-    expose:
-      - 3000
     depends_on:
       #§ '- "' + data.config.sql.docker.services.db.name + '"'
       - "wise_sql_db"
@@ -66,9 +48,9 @@ services:
       - "wise_sql_pusher"
     networks:
       - default
+    expose:
+      - 3000
     environment:
-      #§ "PGRST_SERVER_PROXY_URI: " + data.config.sql.url.production
-      PGRST_SERVER_PROXY_URI: https://sql.wise.vote/
       #§ 'PGRST_DB_URI: postgres://postgrest:postgrest@' + data.config.sql.docker.services.db.name + ':5432/app_db'
       PGRST_DB_URI: postgres://postgrest:postgrest@wise_sql_db:5432/app_db
       PGRST_DB_SCHEMA: api
@@ -76,7 +58,6 @@ services:
       PGRST_MAX_ROWS: 1000 #§< 'PGRST_MAX_ROWS: ' + d(data.config.sql.protocol.maxRowsPerPage)
     volumes:
       - "./postgrest:/postgrest_service:ro"
-    restart: always
 
   #§ data.config.sql.docker.services.api_proxy.name + ':'
   wise_sql_api_proxy:
@@ -84,27 +65,11 @@ services:
     #§ 'container_name: ' + data.config.sql.docker.services.api_proxy.container
     container_name: wise_sql_api_proxy
     command: bash -c "sleep 15 && exec nginx -g 'daemon off;'"
-    ports:
-      - 1080:80
     networks:
-      ## production_only
-      - proxy-tier
-      ## end_production_only
       - default
     volumes:
       - ./api_proxy/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./api_proxy/html/:/usr/share/nginx/html/:ro
-    ## production_only
-    environment:
-      #§ "VIRTUAL_HOST: \"" + url(data.config.sql.url.production).hostname + "\""
-      VIRTUAL_HOST: "sql.wise.vote"
-      VIRTUAL_NETWORK: "caddy-proxy"
-      VIRTUAL_PORT: 80
-      #§ 'CADDY_TLS: ' + ( url(data.config.sql.url.production).protocol === "https:" ? '"yes"' : '"no"')
-      CADDY_TLS: "yes"
-      CADDY_TIMEOUTS: "read 5m, write 2m"
-    ## end_production_only
-    restart: always
 
 volumes:
   pgdata: # steem-wise-sql_pgdata
