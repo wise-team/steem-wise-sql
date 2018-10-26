@@ -42,7 +42,7 @@ services:
       #_embedded_template_disabled_ 'DATABASE_URL: postgres://pusher:pusher@' + data.config.sql.docker.services.db.name + ':5432/app_db'
       DATABASE_URL: postgres://pusher:pusher@wise_sql_db:5432/app_db
       #_embedded_template_disabled_ "STEEM_API_URL: \"" + data.config.steem.apis.filter(api => api.get_block === true).map(api => api.url).join(",") + "\""
-      STEEM_API_URL: "https://api.steemit.com,https://steemd.minnowsupportproject.org,https://rpc.buildteam.io,https://rpc.steemliberator.com"
+      STEEM_API_URL: "https://api.steemit.com,https://rpc.buildteam.io"
       # START_BLOCK_NUM: 25021220 # interesting moment for testing
       WISE_LOG_LEVEL: info
     restart: always
@@ -63,7 +63,7 @@ services:
     networks:
       - default
     environment:
-      #_embedded_template_disabled_ "PGRST_SERVER_PROXY_URI: " + data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host + "/"
+      #_embedded_template_disabled_ "PGRST_SERVER_PROXY_URI: " + data.config.sql.url.production
       PGRST_SERVER_PROXY_URI: https://sql.wise.vote/
       #_embedded_template_disabled_ 'PGRST_DB_URI: postgres://postgrest:postgrest@' + data.config.sql.docker.services.db.name + ':5432/app_db'
       PGRST_DB_URI: postgres://postgrest:postgrest@wise_sql_db:5432/app_db

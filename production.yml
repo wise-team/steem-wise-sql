@@ -46,7 +46,7 @@ services:
       #§ 'DATABASE_URL: postgres://pusher:pusher@' + data.config.sql.docker.services.db.name + ':5432/app_db'
       DATABASE_URL: postgres://pusher:pusher@wise_sql_db:5432/app_db
       #§ "STEEM_API_URL: \"" + data.config.steem.apis.filter(api => api.get_block === true).map(api => api.url).join(",") + "\""
-      STEEM_API_URL: "https://api.steemit.com,https://steemd.minnowsupportproject.org,https://rpc.buildteam.io,https://rpc.steemliberator.com"
+      STEEM_API_URL: "https://api.steemit.com,https://rpc.buildteam.io"
       # START_BLOCK_NUM: 25021220 # interesting moment for testing
       WISE_LOG_LEVEL: info
     restart: always
@@ -67,7 +67,7 @@ services:
     networks:
       - default
     environment:
-      #§ "PGRST_SERVER_PROXY_URI: " + data.config.sql.endpoint.schema + "://" + data.config.sql.endpoint.host + "/"
+      #§ "PGRST_SERVER_PROXY_URI: " + data.config.sql.url.production
       PGRST_SERVER_PROXY_URI: https://sql.wise.vote/
       #§ 'PGRST_DB_URI: postgres://postgrest:postgrest@' + data.config.sql.docker.services.db.name + ':5432/app_db'
       PGRST_DB_URI: postgres://postgrest:postgrest@wise_sql_db:5432/app_db
@@ -96,11 +96,11 @@ services:
       - ./api_proxy/html/:/usr/share/nginx/html/:ro
     ## production_only
     environment:
-      #§ "VIRTUAL_HOST: \"" + data.config.sql.endpoint.host + "\""
+      #§ "VIRTUAL_HOST: \"" + url(data.config.sql.url.production).hostname + "\""
       VIRTUAL_HOST: "sql.wise.vote"
       VIRTUAL_NETWORK: "caddy-proxy"
       VIRTUAL_PORT: 80
-      #§ 'CADDY_TLS: ' + ( data.config.sql.endpoint.schema === "https" ? '"yes"' : '"no"')
+      #§ 'CADDY_TLS: ' + ( url(data.config.sql.url.production).protocol === "https:" ? '"yes"' : '"no"')
       CADDY_TLS: "yes"
       CADDY_TIMEOUTS: "read 5m, write 2m"
     ## end_production_only
