@@ -20,7 +20,7 @@ services:
   postgrest:
     environment:
       #§ "PGRST_SERVER_PROXY_URI: " + data.config.sql.url.staging
-      PGRST_SERVER_PROXY_URI: http://sql.dev.wise.vote/
+      PGRST_SERVER_PROXY_URI: https://sql.dev.wise.jblew.pl/
     restart: always
 
   #§ data.config.sql.docker.services.api_proxy.name + ':'
@@ -32,10 +32,10 @@ services:
       - default
     environment:
       #§ "VIRTUAL_HOST: \"" + url(data.config.sql.url.staging).hostname + "\""
-      VIRTUAL_HOST: "sql.dev.wise.vote"
+      VIRTUAL_HOST: "sql.dev.wise.jblew.pl"
       VIRTUAL_NETWORK: "caddy-proxy"
       VIRTUAL_PORT: 80
       #§ 'CADDY_TLS: ' + ( url(data.config.sql.url.staging).protocol === "https:" ? '"yes"' : '"no"')
-      CADDY_TLS: "no"
+      CADDY_TLS: "yes"
       CADDY_TIMEOUTS: "read 5m, write 2m"
     restart: always
