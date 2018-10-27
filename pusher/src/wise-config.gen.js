@@ -153,6 +153,7 @@ export const data = {
       "pusher": {
         "requestConcurrencyPerNode": 3,
         "blockProcessingTimeoutMs": 9000,
+        "nextBlockDelayMs": 2900,
       },
       "docker": {
         "services": {
