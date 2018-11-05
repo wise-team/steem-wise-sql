@@ -73,7 +73,7 @@ export class BufferedBlockLoader {
         }, 4000);
 
         try {
-            const ops = await api.getAllWiseOperationsInBlock(blockNum, new Wise("-no-username", api).getProtocol());
+            const ops = await api.getAllWiseOperationsInBlock(blockNum);
 
             Log.log().debug("BufferedBlockLoader.doLoadBlock(" + blockNum + ") success");
             loadingElem.ops = ops;
