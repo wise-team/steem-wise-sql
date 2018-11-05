@@ -139,5 +139,27 @@ export class Views {
                 ORDER BY delegator ASC, voter ASC, moment DESC
             $$ LANGUAGE SQL STABLE STRICT;
         `);
+
+        // todo create index
+        await sequelize.query(`CREATE OR REPLACE FUNCTION
+            api.all_rulesets (moment numeric(14, 4))
+            RETURNS TABLE (
+                id integer,
+                block_num integer,
+                transaction_num smallint,
+                transaction_id  varchar(40),
+                "timestamp" timestamp with time zone,
+                moment numeric(14,4),
+                voter varchar(16),
+                delegator varchar(16),
+                operation_type api.enum_operations_operation_type,
+                json_str text
+            )
+            AS $$
+                SELECT DISTINCT ON (delegator, voter) * FROM api.operations
+                WHERE operation_type='set_rules' AND moment <= $1
+                ORDER BY delegator ASC, voter ASC, moment DESC
+            $$ LANGUAGE SQL STABLE STRICT;
+        `);
     }
 }
