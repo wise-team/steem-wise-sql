@@ -48,8 +48,9 @@ services:
       - "wise_sql_pusher"
     networks:
       - default
-    expose:
-      - 3000
+    ports:
+      #§ '- 0.0.0.0:' + data.config.sql.docker.services.postgrest.port + ':3000'
+      - 0.0.0.0:9002:3000
     environment:
       #§ 'PGRST_DB_URI: postgres://postgrest:postgrest@' + data.config.sql.docker.services.db.name + ':5432/app_db'
       PGRST_DB_URI: postgres://postgrest:postgrest@wise_sql_db:5432/app_db
@@ -58,18 +59,6 @@ services:
       PGRST_MAX_ROWS: 1000 #§< 'PGRST_MAX_ROWS: ' + d(data.config.sql.protocol.maxRowsPerPage)
     volumes:
       - "./postgrest:/postgrest_service:ro"
-
-  #§ data.config.sql.docker.services.api_proxy.name + ':'
-  wise_sql_api_proxy:
-    image: nginx
-    #§ 'container_name: ' + data.config.sql.docker.services.api_proxy.container
-    container_name: wise_sql_api_proxy
-    command: bash -c "sleep 15 && exec nginx -g 'daemon off;'"
-    networks:
-      - default
-    volumes:
-      - ./api_proxy/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./api_proxy/html/:/usr/share/nginx/html/:ro
 
 volumes:
   pgdata: # steem-wise-sql_pgdata
