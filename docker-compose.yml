@@ -8,8 +8,6 @@ services:
     container_name: wise_sql_db
     expose: # expose exposes ports only inside this stack and do not publish them to host machine.
       - "5432"
-    networks:
-      - default
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -25,13 +23,11 @@ services:
     command: ./wait-for wise_sql_db:5432 -- npm start #§< 'command: ./wait-for ' + data.config.sql.docker.services.db.name + ':5432 -- npm start'
     depends_on:
       - "wise_sql_db" #§< '- "' + data.config.sql.docker.services.db.name + '"'
-    networks:
-      - default
     environment:
       #§ 'DATABASE_URL: postgres://pusher:pusher@' + data.config.sql.docker.services.db.name + ':5432/app_db'
       DATABASE_URL: postgres://pusher:pusher@wise_sql_db:5432/app_db
       #§ "STEEM_API_URL: \"" + data.config.steem.apis.filter(api => api.get_block === true).map(api => api.url).join(",") + "\""
-      STEEM_API_URL: "https://api.steemit.com,https://rpc.buildteam.io"
+      STEEM_API_URL: "https://api.steemit.com,https://rpc.buildteam.io,https://anyx.io"
       # START_BLOCK_NUM: 25021220 # interesting moment for testing
       WISE_LOG_LEVEL: info
 
@@ -46,8 +42,6 @@ services:
       - "wise_sql_db"
       #§ '- "' + data.config.sql.docker.services.pusher.name + '"'
       - "wise_sql_pusher"
-    networks:
-      - default
     expose:
       - 3000
     environment:
@@ -65,8 +59,9 @@ services:
     #§ 'container_name: ' + data.config.sql.docker.services.api_proxy.container
     container_name: wise_sql_api_proxy
     command: bash -c "sleep 15 && exec nginx -g 'daemon off;'"
-    networks:
-      - default
+    ports:
+      #§ '- ' + data.config.sql.port + ':80'
+      - 8094:80
     volumes:
       - ./api_proxy/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./api_proxy/html/:/usr/share/nginx/html/:ro
