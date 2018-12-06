@@ -3,14 +3,5 @@ version: "3"
 services:
   #§ data.config.sql.docker.services.api_proxy.name + ':'
   wise_sql_api_proxy:
-    image: nginx
-    #§ 'container_name: ' + data.config.sql.docker.services.api_proxy.container
-    container_name: wise_sql_api_proxy
-    command: bash -c "sleep 15 && exec nginx -g 'daemon off;'"
-    networks:
-      - default
-    volumes:
-      - ./api_proxy/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./api_proxy/html/:/usr/share/nginx/html/:ro
     ports:
       - 1080:80
