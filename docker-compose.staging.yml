@@ -13,7 +13,7 @@ services:
   postgrest:
     environment:
       #§ "PGRST_SERVER_PROXY_URI: " + data.config.sql.url.staging
-      PGRST_SERVER_PROXY_URI: https://sql.dev.wise.jblew.pl/
+      PGRST_SERVER_PROXY_URI: https://sql.dev.wise.vote/
     restart: always
 
   #§ data.config.sql.docker.services.api_proxy.name + ':'
