@@ -1,5 +1,5 @@
 #§ 'FROM node:' + data.config.npm.node.version + '-alpine'
-FROM node:10.12-alpine
+FROM node:10.15-alpine
 
 ADD . ./
 
