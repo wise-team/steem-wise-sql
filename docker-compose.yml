@@ -27,7 +27,7 @@ services:
       #§ 'DATABASE_URL: postgres://pusher:pusher@' + data.config.sql.docker.services.db.name + ':5432/app_db'
       DATABASE_URL: postgres://pusher:pusher@wise_sql_db:5432/app_db
       #§ "STEEM_API_URL: \"" + data.config.steem.apis.filter(api => api.get_block === true).map(api => api.url).join(",") + "\""
-      STEEM_API_URL: "https://api.steemit.com,https://rpc.buildteam.io,https://anyx.io"
+      STEEM_API_URL: "https://api.steemit.com,https://anyx.io,https://rpc.usesteem.com/"
       # START_BLOCK_NUM: 25021220 # interesting moment for testing
       WISE_LOG_LEVEL: info
 
