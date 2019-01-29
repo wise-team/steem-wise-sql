@@ -1,0 +1,21 @@
+{
+  "name": "wise-sql-monitoring",
+  "version": "1.0.0",
+  "description": "WiseSQL monitoring",
+  "engines": {
+    "node": ">=10.15"
+  },
+  "scripts": {},
+  "dependencies": {
+    "axios": "^0.18.0",
+    "lodash": "^4.17.11",
+    "ow": "^0.8.0",
+    "steem": "^0.7.4",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^5.2.0"
+  },
+  "devDependencies": {
+
+  }
+}
