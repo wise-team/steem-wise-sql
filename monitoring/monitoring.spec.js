@@ -17,6 +17,9 @@ const options = {
     operationsCheckPeriodSeconds: 3 * 24 * 3600, // 3 days
     requiredSqlProtocolVersion: /*§ §*/ "1.0" /*§ ' "' + data.config.sql.protocol.version + '" ' §.*/ ,
     requiredMaxRowsPerPage: /*§ §*/ 1000 /*§ ' ' + data.config.sql.protocol.maxRowsPerPage + ' ' §.*/ ,
+    maxLagSeconds: 20,
+    maxLagUpdatedAgoSeconds: 5 * 60, // 5 min
+    maxBlocksLag: 18
 };
 
 describe("Wise SQL metrics", function () {
@@ -33,16 +36,17 @@ describe("Wise SQL metrics", function () {
             properties = propertiesResp.data;
         });
 
-        it("Sql endpoint has lag lower than 10 seconds", () => {
-            expect(parseInt(properties.filter(prop => prop.key === "lag")[0].value)).to.be.lessThan(10);
+        it(`Sql endpoint has lag lower than ${options.maxLagSeconds} seconds`, () => {
+            const currentLagSeconds = parseInt(properties.filter(prop => prop.key === "lag")[0].value);
+            expect(currentLagSeconds).to.be.lessThan(options.maxLagSeconds);
         });
 
-        it("Sql endpoint has lag updated at most 5 minutes ago", () => {
+        it(`Sql endpoint has lag updated at most ${options.maxLagUpdatedAgoSeconds} seconds ago`, () => {
             const lagUpdateTimeProp = properties.filter(prop => prop.key === "lag_update_time")[0].value;
             const lagUptateTimestamp = new Date(lagUpdateTimeProp).getTime();
             const lagUpdatedAgoMs = Date.now() - lagUptateTimestamp;
 
-            expect(lagUpdatedAgoMs).to.be.lessThan(5 * 60 * 1000);
+            expect(lagUpdatedAgoMs).to.be.lessThan(options.maxLagUpdatedAgoSeconds * 1000);
         });
 
         it("Sql endpoint has more than one source of blocks", () => {
@@ -105,8 +109,9 @@ describe("Wise SQL metrics", function () {
             headBlock = dgop.head_block_number;
         });
 
-        it("Sql endpoint is at most 10 blocks away from the head block", () => {
-            expect(lastProcessedBlock).to.be.greaterThan(headBlock - 10);
+        it(`Sql endpoint is at most ${options.maxBlocksLag} blocks away from the head block`, () => {
+            const minBlock = headBlock  - options.maxBlocksLag;
+            expect(lastProcessedBlock).to.be.gte(minBlock);
         });
     });
 
