@@ -2,6 +2,7 @@
   "name": "wise-sql-monitoring",
   "version": "1.0.0",
   "description": "WiseSQL monitoring",
+  "private": true,
   "engines": {
     "node": ">=10.15"
   },
