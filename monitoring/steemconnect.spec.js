@@ -18,7 +18,8 @@ const steemApiUrl = process.env.STEEM_API_URL;
 ow(steemApiUrl, ow.string.nonEmpty.label("Env STEEM_API_URL"));
 
 // this is generated basing on wise.config file
-const requiredSteemconnectConfig = /*§ §*/ {
+// prettier-ignore
+const requiredSteemconnectConfig = /*§ §*/{
   "oauth2Settings": {
     "baseAuthorizationUrl": "https://steemconnect.com/oauth2/authorize",
     "tokenUrl": "https://steemconnect.com/api/oauth2/token",
@@ -114,7 +115,7 @@ const requiredSteemconnectConfig = /*§ §*/ {
       }
     }
   }
-} /*§ JSON.stringify(data.config.steemconnect, undefined, 2) §.*/ ;
+}/*§ JSON.stringify(data.config.steemconnect, undefined, 2) §.*/ ;
 
 const options = {
   steemconnectAppApiUrlBase: "https://api.steemconnect.com/api/apps/@",

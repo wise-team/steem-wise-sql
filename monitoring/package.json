@@ -1,6 +1,6 @@
 {
   "name": "wise-sql-monitoring",
-  "version": "1.0.0",
+  "version": "3.1.1",
   "description": "WiseSQL monitoring",
   "private": true,
   "engines": {
@@ -16,7 +16,20 @@
     "chai-as-promised": "^7.1.1",
     "mocha": "^5.2.0"
   },
-  "devDependencies": {
-
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wise-team/steem-wise-sql.git"
+  },
+  "keywords": [
+    "steem",
+    "blockchain",
+    "wise"
+  ],
+  "author": "The Wise Team (https://wise-team.io/)",
+  "license": "MIT",
+  "homepage": "https://wise.vote/",
+  "bugs": {
+    "url": "https://github.com/wise-team/steem-wise-sql/issues"
   }
 }
