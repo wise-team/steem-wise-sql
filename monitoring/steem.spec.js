@@ -20,8 +20,8 @@ const options = {
 };
 
 describe(`Default steem api (${steemApiUrl}) using steem-js`, function () {
-    this.timeout(7000);
-    this.retries(1);
+    this.timeout(8000);
+    this.retries(2);
 
     const steem = new steemJs.api.Steem({
         url: steemApiUrl
