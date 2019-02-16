@@ -1,18 +1,9 @@
-import {
-  expect
-} from "chai";
+import { expect } from "chai";
 import "mocha";
 import ow from "ow";
-import * as fs from "fs";
 import * as _ from "lodash";
 import Axios from "axios";
 import * as steemJs from "steem";
-import {
-  Context
-} from "../Context";
-import {
-  Config
-} from "../config";
 
 const steemApiUrl = process.env.STEEM_API_URL;
 ow(steemApiUrl, ow.string.nonEmpty.label("Env STEEM_API_URL"));
@@ -51,7 +42,7 @@ const requiredSteemconnectConfig = /*§ §*/{
     "production": {
       "app": {
         "account": "wisevote.app",
-        "last_account_update": "1970-01-01T00:00:00",
+        "last_account_update": "2019-02-16T09:00:06",
         "last_owner_update": "1970-01-01T00:00:00",
         "keys": {
           "owner": "STM82hFUKjN2j8KGqQ8rz9YgFAbMrWFuCPkabtrAnUfV2JQshNPLz",
@@ -83,7 +74,7 @@ const requiredSteemconnectConfig = /*§ §*/{
     "staging": {
       "app": {
         "account": "wisevote.staging",
-        "last_account_update": "1970-01-01T00:00:00",
+        "last_account_update": "2019-02-16T09:32:18",
         "last_owner_update": "1970-01-01T00:00:00",
         "keys": {
           "owner": "STM82hFUKjN2j8KGqQ8rz9YgFAbMrWFuCPkabtrAnUfV2JQshNPLz",
@@ -193,35 +184,25 @@ if (new Date().getMinutes() < 11) {
 
       it("has proper recovery_account", () => expect(appAccount.recovery_account).is.equal(appObj.recovery_account));
 
-      it("has proper owner account in metadata", () => {
+      it("has proper creator account in metadata", () => {
         const metadata = JSON.parse(appAccount.json_metadata);
-        expect(metadata.owner).is.equal(requiredSteemconnectConfig.owner.account);
+        expect(metadata.profile.creator, "metadata.profile.creator").is.equal(requiredSteemconnectConfig.owner.account);
       });
 
       it("has proper keys and threshold thresholds", () => {
-        expect(appAccount.owner.weight_threshold).is.equal(1);
-        expect(appAccount.owner.account_auths).is.an("array").with.length(1);
+        expect(appAccount.owner.weight_threshold, ".owner.weight_threshold").is.equal(1);
+        expect(appAccount.owner.account_auths, ".owner.account_auths").is.an("array").with.length(1);
         expect(appAccount.owner.account_auths[0][0]).is.equal("steemconnect");
         expect(appAccount.owner.account_auths[0][1]).is.equal(1);
-        expect(appAccount.owner.key_auths).is.an("array").with.length(1);
+        expect(appAccount.owner.key_auths, ".owner.key_auths").is.an("array").with.length(1);
         expect(appAccount.owner.key_auths[0][0]).is.equal(appObj.keys.owner);
         expect(appAccount.owner.key_auths[0][1]).is.equal(1);
 
-        expect(appAccount.active.weight_threshold).is.equal(1);
-        expect(appAccount.active.account_auths).is.an("array").with.length(1);
-        expect(appAccount.active.account_auths[0][0]).is.equal("steemconnect");
-        expect(appAccount.active.account_auths[0][1]).is.equal(1);
-        expect(appAccount.active.key_auths).is.an("array").with.length(1);
+        expect(appAccount.active.weight_threshold, ".active.weight_threshold").is.equal(1);
+        expect(appAccount.active.account_auths, ".active.account_auths").is.an("array").with.length(0);
+        expect(appAccount.active.key_auths, ".active.key_auths").is.an("array").with.length(1);
         expect(appAccount.active.key_auths[0][0]).is.equal(appObj.keys.active);
         expect(appAccount.active.key_auths[0][1]).is.equal(1);
-
-        expect(appAccount.posting.weight_threshold).is.equal(1);
-        expect(appAccount.posting.account_auths).is.an("array").with.length(1);
-        expect(appAccount.posting.account_auths[0][0]).is.equal("steemconnect");
-        expect(appAccount.posting.account_auths[0][1]).is.equal(1);
-        expect(appAccount.posting.key_auths).is.an("array").with.length(1);
-        expect(appAccount.posting.key_auths[0][0]).is.equal(appObj.keys.posting);
-        expect(appAccount.posting.key_auths[0][1]).is.equal(1);
 
         expect(appAccount.memo_key).is.equal(appObj.keys.memo);
       });
