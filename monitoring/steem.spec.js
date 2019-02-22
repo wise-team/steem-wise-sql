@@ -4,7 +4,7 @@ import {
 import "mocha";
 import * as _ from "lodash";
 import * as steemJs from "steem";
-import Axios from "axios";
+import * as BluebirdPromise from "bluebird";
 import ow from "ow";
 import {
     semverCompare
@@ -21,7 +21,9 @@ const options = {
 
 describe(`Default steem api (${steemApiUrl}) using steem-js`, function () {
     this.timeout(8000);
-    this.retries(2);
+    this.retries(3);
+
+    beforeEach(async () => await BluebirdPromise.delay(1500));
 
     const steem = new steemJs.api.Steem({
         url: steemApiUrl
