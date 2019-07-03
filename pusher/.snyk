@@ -1,4 +1,18 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
-version: v1.13.3
+version: v1.13.5
 ignore: {}
-patch: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-450202:
+    - sequelize > lodash:
+        patched: '2019-07-03T23:45:05.417Z'
+    - steem > lodash:
+        patched: '2019-07-03T23:45:05.417Z'
+    - steem-wise-core > lodash:
+        patched: '2019-07-03T23:45:05.417Z'
+    - steem-wise-core > steem > lodash:
+        patched: '2019-07-03T23:45:05.417Z'
+    - universe-log > winston > async > lodash:
+        patched: '2019-07-03T23:45:05.417Z'
+    - steem-wise-core > universe-log > winston > async > lodash:
+        patched: '2019-07-03T23:45:05.417Z'
