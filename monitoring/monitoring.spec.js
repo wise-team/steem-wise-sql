@@ -78,12 +78,12 @@ describe("Wise SQL metrics", function () {
                 .with.length.gte(4);
         });
 
-        it("Less than 20% of confirm_vote were rejections", () => {
+        it("Less than 50% of confirm_vote were rejections", () => {
             const confirmVotes = operations.filter((op) => op.operation_type === "confirm_vote");
             const rejections = confirmVotes
                 .map(op => JSON.parse(op.json_str))
                 .filter((confirmVote) => !confirmVote.accepted);
-            expect(rejections.length).to.be.lte(confirmVotes.length / 5);
+            expect(rejections.length).to.be.lte(confirmVotes.length * 0.5);
         });
 
         it("More than 60% of voteorders are confirmed", () => {
