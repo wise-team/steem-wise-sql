@@ -20,7 +20,7 @@
     "sequelize": "^4.39.0",
     "steem": "^0.7.2",
     "steem-wise-core": "^4.0.0",
-    "universe-log": "^0.1.0"
+    "universe-log": "^0.2.0"
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.24",
