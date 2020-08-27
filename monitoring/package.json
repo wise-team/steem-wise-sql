@@ -8,13 +8,13 @@
   },
   "scripts": {},
   "dependencies": {
-    "axios": "^0.18.0",
-    "lodash": "^4.17.11",
-    "ow": "^0.8.0",
-    "steem": "^0.7.4",
-    "chai": "^4.2.0",
-    "chai-as-promised": "^7.1.1",
-    "mocha": "^5.2.0"
+    "axios": "0.18.1",
+    "lodash": "4.17.20",
+    "ow": "0.8.0",
+    "steem": "0.7.11",
+    "chai": "4.2.0",
+    "chai-as-promised": "7.1.1",
+    "mocha": "5.2.0"
   },
   "devDependencies": {},
   "repository": {
