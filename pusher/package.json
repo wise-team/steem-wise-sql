@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.24",
-    "@types/node": "^10.11.0",
+    "@types/node": "10.17.47",
     "@types/pg": "^7.4.10",
     "@types/sequelize": "^4.27.26",
     "ts-node": "^6.2.0",
